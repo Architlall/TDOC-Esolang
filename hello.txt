@@ -1,0 +1,8 @@
+<htpl>
+    <log>
+        Hello World
+    </log>
+    <log>
+        Hello World2
+    </log>
+</htpl>
