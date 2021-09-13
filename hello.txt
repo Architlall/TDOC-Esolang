@@ -1,8 +1,13 @@
 <htpl>
-    <log>
-        Hello World
+     <in val = 25463/>
+     <ch rc = 'a'/>
+     <log>
+        val
+    </log>
+     <log>
+        rc
     </log>
     <log>
-        Hello World2
+        Hello World
     </log>
 </htpl>
