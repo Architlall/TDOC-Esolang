@@ -1,0 +1,13 @@
+<htpl>
+     <in val = 25/>
+     <ch rc = 'p'/>
+     <log>
+        val
+    </log>
+     <log>
+        rc
+    </log>
+    <log>
+        Hello World
+    </log>
+</htpl>
