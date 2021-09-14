@@ -1,0 +1,11 @@
+<htpl>
+     <in val/>
+     <ch rc = 'a'/>
+     <take val/>
+     <log>
+        val
+    </log>
+     <log>
+        rc
+    </log>
+</htpl>
