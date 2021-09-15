@@ -2,10 +2,10 @@
      <in val = 25463/>
      <ch rc = 'a'/>
      <log>
-        val
+        $val,$rc,hello,e,$val
     </log>
      <log>
-        rc
+        $rc,hello,$rc
     </log>
     <log>
         Hello World
