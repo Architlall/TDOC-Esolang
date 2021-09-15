@@ -6,6 +6,7 @@
 #include "token_dataset.hpp"
 std::unordered_map<std::string, std::pair<std::string, std::string>> varStore;
 std::vector<std::string> codeSnippets;
+using std::cout;
 //Generates an output C-Lang file 
 void ouputFileReader()
 {
@@ -40,22 +41,25 @@ void printlnParserStream()
     for (int i = 0; i < codeSnippets.size(); i++)
     {
         //fills the println statment with required result
-        if (codeSnippets[i] == "printf()" && codeSnippets[i + 2] == ";")
-        {
-            itr = varStore.find(codeSnippets[i + 1]);
+        if (codeSnippets[i] == "printf()" && (codeSnippets[i + 2] == ";" || codeSnippets[i+3] == ";"))
+        { // if its comma seperated then i+3 will be ; not i+2
+            if(codeSnippets[i+1][0] != '$') goto string_mode; 
+            // $ means its a variable if not then treat as a string
+
+            itr = varStore.find(codeSnippets[i + 1].substr(1)); // the dollar from the variable name needs to be removed as actual name doesnt contain a dollar
             //Deconstructs the print statements to be inserted
             if (itr != varStore.end())
             {
                 //For variable types like e.g println("%d",var_name);
-                codeSnippets[i] = codeSnippets[i].substr(0, 7) + '"' + varKey.find((varKey.find(itr->second.first))->second)->second + "%c" + '"' + "," + codeSnippets[i + 1] + ',' + "10" + codeSnippets[i].substr(7, 1) + codeSnippets[i + 2];
+                codeSnippets[i] = codeSnippets[i].substr(0, 7) + '"' + varKey.find((varKey.find(itr->second.first))->second)->second + "%c" + '"' + "," + codeSnippets[i + 1].substr(1) + ',' + ((codeSnippets[i+2] == ",")? "32":"10") + codeSnippets[i].substr(7, 1) + ((codeSnippets[i+2] == ",")? codeSnippets[i+3]:codeSnippets[i+2]);
                 codeSnippets.erase(codeSnippets.begin() + i + 1);
                 codeSnippets.erase(codeSnippets.begin() + i + 1);
             }
             else
-            {
+            {   string_mode:
                 //For variable types like e.g println("_raw_print_");
-                codeSnippets[i + 1] = '"' + codeSnippets[i + 1] + "%c" + '"' + ',' + "10";
-                codeSnippets[i] = codeSnippets[i].substr(0, 7) + codeSnippets[i + 1] + codeSnippets[i].substr(7, 1) + codeSnippets[i + 2];
+                codeSnippets[i + 1] = '"' + codeSnippets[i + 1] + "%c" + '"' + ',' + ((codeSnippets[i+2] == ",")? "32":"10");
+                codeSnippets[i] = codeSnippets[i].substr(0, 7) + codeSnippets[i + 1] + codeSnippets[i].substr(7, 1) + ((codeSnippets[i+2] == ",")? codeSnippets[i+3]:codeSnippets[i+2]);
                 codeSnippets.erase(codeSnippets.begin() + i + 1);
                 codeSnippets.erase(codeSnippets.begin() + i + 1);
             }
@@ -113,7 +117,43 @@ void fileVectorBuilder(std::string res)
     {
         if (codeSnippets[codeSnippets.size() - 1] == "printf()")
         {
-            codeSnippets.push_back(res);
+            int firstTime=1;
+            int commaEncountered=0;
+            std::string tmp="";
+            for(int i=0;res[i]!=0;i++)
+            {
+                if(res[i] == ',')
+                {  
+                    commaEncountered=1;
+                    if(!firstTime)
+                    {
+                        codeSnippets.push_back("printf()");
+                        // this step has been done because for the first time the printf statement check in the previous if makes sure there is a printf before this but thats not the case for all comma seperated values
+                    }
+                    firstTime=0;
+                    codeSnippets.push_back(tmp);
+                    codeSnippets.push_back(","); // this step is necessarry as when there is a comma it needs to be space seperated not \n
+                    codeSnippets.push_back(";");
+                    cout<<tmp<<"\n";
+                    
+                    tmp="";
+                }
+                else
+                {
+                tmp+=res.substr(i,1);
+                }
+            }
+            if(commaEncountered)
+            {
+            codeSnippets.push_back("printf()");
+            codeSnippets.push_back(tmp); // this codeblock doesnt need a ; because the last </log> takes care of the ;
+            commaEncountered=0; // to make it functional for a recheck of comma in the input
+            }
+            else
+            {
+                codeSnippets.push_back(tmp);
+            }
+
         }
         else
         {
@@ -124,7 +164,7 @@ void fileVectorBuilder(std::string res)
 int main()
 {
     std::string res;
-    std::ifstream readData("input.txt");
+    std::ifstream readData("input.htpl");
     while (getline(readData, res))
     {
         fileVectorBuilder(res);
