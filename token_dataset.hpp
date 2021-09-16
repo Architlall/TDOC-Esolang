@@ -9,7 +9,6 @@ void dataSet()
     varKey.insert({"<htpl>", "#include<stdio.h>\n int main()\n{"});
     varKey.insert({"/", "}"});
     varKey.insert({"<log>", "printf()"});
-    varKey.insert({"<for>", "for()"});
     varKey.insert({"/log", ";"});
     varKey.insert({"int", "%d"});
     varKey.insert({"char", "%c"});
