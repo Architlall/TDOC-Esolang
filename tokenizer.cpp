@@ -60,13 +60,13 @@ void printlnParserStream()
 
         else if (codeSnippets[i] == "scanf()")
         {
-            std::cout << "helll"
-                      << "\n";
-            std::cout << codeSnippets[i + 1] << "\n";
+            // std::cout << "helll"
+            //           << "\n";
+            // std::cout << codeSnippets[i + 1] << "\n";
             std::cout << varKey.find((varKey.find(varStore.find(codeSnippets[i + 1])->second.first))->second)->second << "\n";
             {
                 codeSnippets[i] = codeSnippets[i].substr(0, 6) + '"' + varKey.find((varKey.find(varStore.find(codeSnippets[i + 1])->second.first))->second)->second + '"' + "," + '&' + codeSnippets[i + 1] + ')' + ';';
-                std::cout << codeSnippets[i] << "\n";
+                // std::cout << codeSnippets[i] << "\n";
                 codeSnippets.erase(codeSnippets.begin() + i + 1);
             }
         }
@@ -79,7 +79,6 @@ void fileVectorBuilder(std::string res)
     res = removeWhitespace(res);
     if (res[0] == '<')
     {
-        std::cout << res << "\n";
         if (res.substr(1, 4) == "/log")
         {
             res = "/log";
@@ -126,7 +125,7 @@ void fileVectorBuilder(std::string res)
                     }
                 }
                 res = varKey.find(tmp[0])->second + res.substr(res.find(' '), res.length() - res.find(' ') - 1) + ';';
-                std::cout << res << "\n";
+                // std::cout << res << "\n";
                 codeSnippets.push_back(res);
                 varStore.insert({tmp[1], {tmp[0], tmp[2]}});
             }
@@ -148,9 +147,9 @@ void fileVectorBuilder(std::string res)
                 if (tmp[0] == "in" || tmp[0] == "ch")
                 {
                     res = varKey.find(tmp[0])->second + res.substr(res.find(' '), res.length() - res.find(' ') - 1) + ';';
-                    std::cout << res[0] << "\n";
+                    // std::cout << res[0] << "\n";
                     codeSnippets.push_back(res);
-                    std::cout << codeSnippets[codeSnippets.size() - 1] << "\n";
+                    // std::cout << codeSnippets[codeSnippets.size() - 1] << "\n";
                     varStore.insert({tmp[1], {tmp[0], "NULL"}});
                 }
                 else if (tmp[0] == "take")
@@ -158,8 +157,8 @@ void fileVectorBuilder(std::string res)
                     res = varKey.find(tmp[0])->second;
                     codeSnippets.push_back(res);
                     codeSnippets.push_back(tmp[1]);
-                    std::cout << codeSnippets[codeSnippets.size() - 1] << "\n";
-                    std::cout << codeSnippets[codeSnippets.size() - 2] << "\n";
+                    // std::cout << codeSnippets[codeSnippets.size() - 1] << "\n";
+                    // std::cout << codeSnippets[codeSnippets.size() - 2] << "\n";
                 }
             }
         }
@@ -172,7 +171,7 @@ void fileVectorBuilder(std::string res)
     {
         if (codeSnippets[codeSnippets.size() - 1] == "printf()")
         {
-            std::cout << res << "\n";
+            // std::cout << res << "\n";
             codeSnippets.push_back(res);
         }
         else if (codeSnippets[codeSnippets.size() - 1] == "scanf()")
