@@ -1,7 +1,17 @@
 <htpl>
      <in val/>
+     <in x/>
      <ch rc = 'a'/>
      <take val/>
+     <log>
+        val
+     </log>
+     <% val = 2+3 %>
+     <% x = 6 %>
+     <% x = val+x %>
+     <log>
+        x
+     </log>
      <log>
         val
     </log>
