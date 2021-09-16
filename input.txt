@@ -3,22 +3,16 @@
     <take val/>
     <? if (val<=3)
         <?? if(val==2)
-            <log>
-                val
-            </log>
+            <% val = val * 100 %>
         /??>
         <?? else
-            <log>
-                val
-            </log> 
+            <% val+=100 %> 
         /??>
     /?>
     <? else (val>3)
-        <log>
-            val
-        </log>
+        <% val-=100 %>
     /?>
     <log>
-        Nothing present
+        val
     </log>
 </htpl>
