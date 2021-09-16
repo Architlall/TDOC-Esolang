@@ -6,7 +6,8 @@ void dataSet()
     varKey.insert({"in", "int"});
     varKey.insert({"ch", "char"});
     varKey.insert({"st", "char[]"});
-    varKey.insert({"<htpl>", "#include<stdio.h>\n int main()\n{"});
+    varKey.insert({"<htpl>", "#include<stdio.h>\nint main()\n{"});
+    varKey.insert({"take", "scanf()"});
     varKey.insert({"/", "}"});
     varKey.insert({"<log>", "printf()"});
     varKey.insert({"/log", ";"});
