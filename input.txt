@@ -1,13 +1,24 @@
 <htpl>
-     <in val = 25/>
-     <ch rc = 'p'/>
-     <log>
-        val
-    </log>
-     <log>
-        rc
-    </log>
+    <in val/>
+    <take val/>
+    <? if (val<=3)
+        <?? if(val==2)
+            <log>
+                val
+            </log>
+        /??>
+        <?? else
+            <log>
+                val
+            </log> 
+        /??>
+    /?>
+    <? else (val>3)
+        <log>
+            val
+        </log>
+    /?>
     <log>
-        Hello World
+        Nothing present
     </log>
 </htpl>
