@@ -91,6 +91,23 @@ void fileVectorBuilder(std::string res)
             res = "/";
             codeSnippets.push_back(varKey.find(res)->second);
         }
+        else if(res[1] == '%'){
+                  std::vector<std::string> tmp;
+                  std::string stf = "";
+                  for(int i=2;i<res.length()-1;i++){
+                      if(res[i] != '%'){
+                          stf = stf + res[i];
+                      }
+                      else {
+                          break;
+                      }
+                  }
+                  stf = stf + ';';
+                  std::cout<<stf<<"\n";
+                  codeSnippets.push_back(stf);
+
+            }
+
         else if (res[res.length() - 1] == '>' && res[res.length() - 2] == '/')
         {
 
