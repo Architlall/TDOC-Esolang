@@ -1,11 +1,12 @@
 <htpl>
-     <in val = 25463/>
+     <in val =25463 />
+     <in i />
      <ch rc = 'a'/>
      <log>
-        $val,$rc,hello,e,$val
+        $val,$rc,hello,$rc,$val
     </log>
      <log>
-        $rc,hello,$rc
+        hello
     </log>
     <log>
         Hello World

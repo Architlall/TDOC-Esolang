@@ -6,7 +6,6 @@
 #include "token_dataset.hpp"
 std::unordered_map<std::string, std::pair<std::string, std::string>> varStore;
 std::vector<std::string> codeSnippets;
-using std::cout;
 //Generates an output C-Lang file 
 void ouputFileReader()
 {
@@ -41,7 +40,7 @@ void printlnParserStream()
     for (int i = 0; i < codeSnippets.size(); i++)
     {
         //fills the println statment with required result
-        if (codeSnippets[i] == "printf()" && (codeSnippets[i + 2] == ";" || codeSnippets[i+3] == ";"))
+        if (codeSnippets[i] == "printf()" && (codeSnippets[i + 2] == ";" || codeSnippets[i+2] == ","))
         { // if its comma seperated then i+3 will be ; not i+2
             if(codeSnippets[i+1][0] != '$') goto string_mode; 
             // $ means its a variable if not then treat as a string
@@ -51,18 +50,18 @@ void printlnParserStream()
             if (itr != varStore.end())
             {
                 //For variable types like e.g println("%d",var_name);
-                codeSnippets[i] = codeSnippets[i].substr(0, 7) + '"' + varKey.find((varKey.find(itr->second.first))->second)->second + "%c" + '"' + "," + codeSnippets[i + 1].substr(1) + ',' + ((codeSnippets[i+2] == ",")? "32":"10") + codeSnippets[i].substr(7, 1) + ((codeSnippets[i+2] == ",")? codeSnippets[i+3]:codeSnippets[i+2]);
-                codeSnippets.erase(codeSnippets.begin() + i + 1);
-                codeSnippets.erase(codeSnippets.begin() + i + 1);
+                codeSnippets[i] = codeSnippets[i].substr(0, 7) + '"' + varKey.find((varKey.find(itr->second.first))->second)->second + "%c" + '"' + "," + codeSnippets[i + 1].substr(1) + ',' + ((codeSnippets[i+2] == ",")? "32":"10") + codeSnippets[i].substr(7, 1) + ((codeSnippets[i+2] == ",")? ";":codeSnippets[i+2]);
+                
             }
             else
             {   string_mode:
                 //For variable types like e.g println("_raw_print_");
                 codeSnippets[i + 1] = '"' + codeSnippets[i + 1] + "%c" + '"' + ',' + ((codeSnippets[i+2] == ",")? "32":"10");
-                codeSnippets[i] = codeSnippets[i].substr(0, 7) + codeSnippets[i + 1] + codeSnippets[i].substr(7, 1) + ((codeSnippets[i+2] == ",")? codeSnippets[i+3]:codeSnippets[i+2]);
-                codeSnippets.erase(codeSnippets.begin() + i + 1);
-                codeSnippets.erase(codeSnippets.begin() + i + 1);
+                codeSnippets[i] = codeSnippets[i].substr(0, 7) + codeSnippets[i + 1] + codeSnippets[i].substr(7, 1) + ((codeSnippets[i+2] == ",")? ";":codeSnippets[i+2]);
+                
             }
+            codeSnippets.erase(codeSnippets.begin() + i + 1);
+            codeSnippets.erase(codeSnippets.begin() + i + 1);
         }
     }
 }
@@ -85,7 +84,7 @@ void fileVectorBuilder(std::string res)
             codeSnippets.push_back(varKey.find(res)->second);
         }
         else if (res[res.length() - 1] == '>' && res[res.length() - 2] == '/')
-        {
+        {   // for variables its a self closing htpl line
             res = res.substr(1, res.length() - 3) + " ";
             std::vector<std::string> tmp;
             std::string stf = "";
@@ -133,14 +132,13 @@ void fileVectorBuilder(std::string res)
                     firstTime=0;
                     codeSnippets.push_back(tmp);
                     codeSnippets.push_back(","); // this step is necessarry as when there is a comma it needs to be space seperated not \n
-                    codeSnippets.push_back(";");
-                    cout<<tmp<<"\n";
+
                     
                     tmp="";
                 }
                 else
                 {
-                tmp+=res.substr(i,1);
+                tmp+=res.substr(i,1); // the loop is going character by character and checking for commas simultaneously
                 }
             }
             if(commaEncountered)
