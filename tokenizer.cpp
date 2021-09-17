@@ -7,13 +7,14 @@ std::unordered_map<std::string, std::pair<std::string, std::string>> varStore;
 std::vector<std::string> codeSnippets;
 std::vector<std::string> conditionalRender;
 std::unordered_map<std::string, std::string> varKey;
-std::unordered_map<std::string,std::string> variable_DataMapper;
+std::unordered_map<std::string, std::string> variable_DataMapper;
 void dataSet()
 {
     varKey.insert({"in", "int"});
     varKey.insert({"ch", "char"});
     varKey.insert({"st", "char[]"});
-    varKey.insert({"<htpl>", "#include<stdio.h>\nint main()\n{"});
+    varKey.insert({"<htpl>", "#include<stdio.h>\n"});
+    varKey.insert({"<main>", "int main()\n{"});
     varKey.insert({"take", "scanf()"});
     varKey.insert({"/", "}"});
     varKey.insert({"<log>", "printf()"});
@@ -53,16 +54,14 @@ std::string removeWhitespace(std::string req)
 void printlnParserStream()
 {
     dataSet();
-    int switch_btn=0;
+    int switch_btn = 0;
     for (int i = 0; i < codeSnippets.size(); i++)
     {
-        std::cout << codeSnippets[i] << "\n";
         if (codeSnippets[i] == "printf()" && (codeSnippets[i + 2][0] == ';'))
         {
             if (variable_DataMapper.find(codeSnippets[i + 1]) != variable_DataMapper.end())
             {
-                std::cout<<codeSnippets[i+1]<<"\n";
-                codeSnippets[i] = codeSnippets[i].substr(0, 7) + '"' + varKey.find((varKey.find(variable_DataMapper.find(codeSnippets[i + 1])->second))->second)->second  + '"' + "," + codeSnippets[i + 1] + ','  + codeSnippets[i].substr(7, 1) + codeSnippets[i + 2];
+                codeSnippets[i] = codeSnippets[i].substr(0, 7) + '"' + varKey.find((varKey.find(variable_DataMapper.find(codeSnippets[i + 1])->second))->second)->second + '"' + "," + codeSnippets[i + 1] + ',' + codeSnippets[i].substr(7, 1) + codeSnippets[i + 2];
                 codeSnippets.erase(codeSnippets.begin() + i + 1);
                 codeSnippets.erase(codeSnippets.begin() + i + 1);
             }
@@ -78,7 +77,7 @@ void printlnParserStream()
         else if (codeSnippets[i] == "scanf()")
         {
             {
-                codeSnippets[i] = codeSnippets[i].substr(0, 6) + '"' + varKey.find((varKey.find(variable_DataMapper.find(codeSnippets[i+1])->second))->second)->second + '"' + "," + '&' + codeSnippets[i + 1] + ')' + ';';
+                codeSnippets[i] = codeSnippets[i].substr(0, 6) + '"' + varKey.find((varKey.find(variable_DataMapper.find(codeSnippets[i + 1])->second))->second)->second + '"' + "," + '&' + codeSnippets[i + 1] + ')' + ';';
                 codeSnippets.erase(codeSnippets.begin() + i + 1);
             }
         }
@@ -90,11 +89,15 @@ void fileVectorBuilder(std::string res)
     dataSet();
     if (res[0] == '<')
     {
-        if (res.substr(0, 5) == "<log>" && (res.substr(5, res.length() - 5)).substr((res.substr(5, res.length() - 5)).length()-6,6)=="</log>")
+        if (res == "<main>")
+        {
+            codeSnippets.push_back(varKey.find("<main>")->second);
+        }
+        else if (res.substr(0, 5) == "<log>" && (res.substr(5, res.length() - 5)).substr((res.substr(5, res.length() - 5)).length() - 6, 6) == "</log>")
         {
             codeSnippets.push_back(varKey.find("<log>")->second);
             int pos1 = res.find('>');
-            std::string instant_var = res.substr(pos1+1,res.length()-pos1-7);
+            std::string instant_var = res.substr(pos1 + 1, res.length() - pos1 - 7);
             codeSnippets.push_back(instant_var);
             codeSnippets.push_back(";");
         }
@@ -103,9 +106,13 @@ void fileVectorBuilder(std::string res)
             res = "/log";
             codeSnippets.push_back(varKey.find(res)->second);
         }
+        else if (res == "</htpl>")
+        {
+            std::cout << " "
+                      << "\n";
+        }
         else if (res[1] == '/' && res.substr(2, 3) != "log")
         {
-
             res = "/";
             codeSnippets.push_back(varKey.find(res)->second);
         }
@@ -146,19 +153,23 @@ void fileVectorBuilder(std::string res)
 
             if (x == 1)
             {
-                std::string helper_string="";
+                std::string helper_string = "";
                 std::vector<int> comma_separators;
-                for(int i=0;i<res.length();i++){
-                    if(res[i]=='='){
-                        helper_string+=' ';
-                        helper_string+=res[i];
-                        helper_string+=' ';
-                    } 
-                    else {
-                        helper_string+=res[i];
+                for (int i = 0; i < res.length(); i++)
+                {
+                    if (res[i] == '=')
+                    {
+                        helper_string += ' ';
+                        helper_string += res[i];
+                        helper_string += ' ';
                     }
-                    if(helper_string=="in" || helper_string=="ch"){
-                        helper_string+=' ';
+                    else
+                    {
+                        helper_string += res[i];
+                    }
+                    if (helper_string == "in" || helper_string == "ch")
+                    {
+                        helper_string += ' ';
                     }
                 }
                 res = helper_string;
@@ -225,25 +236,32 @@ void fileVectorBuilder(std::string res)
                 {
                     res = varKey.find(tmp[0])->second + res.substr(res.find(' '), res.length() - res.find(' ') - 1) + ';';
                     codeSnippets.push_back(res);
-                    std::string help_string="";
+                    std::string help_string = "";
                     std::vector<std::string> ins_vector;
-                    for(int i=0;i<res.length();i++){
-                        if((res[i] >= 'a' && res[i] <= 'z') || (res[i] >= 'A' && res[i] <= 'Z') ||(res[i] >= '0' && res[i] <= '9')){
-                            help_string+=res[i];
-                        } else {
+                    for (int i = 0; i < res.length(); i++)
+                    {
+                        if ((res[i] >= 'a' && res[i] <= 'z') || (res[i] >= 'A' && res[i] <= 'Z') || (res[i] >= '0' && res[i] <= '9'))
+                        {
+                            help_string += res[i];
+                        }
+                        else
+                        {
                             ins_vector.push_back(help_string);
-                            help_string="";
+                            help_string = "";
                         }
                     }
                     std::string stf;
-                    for(auto it: varKey){
-                        if(it.second==ins_vector[0]){
+                    for (auto it : varKey)
+                    {
+                        if (it.second == ins_vector[0])
+                        {
                             stf = it.first;
                             break;
                         }
                     }
-                    for(int i=1;i<ins_vector.size();i++){
-                        variable_DataMapper.insert({ins_vector[i],stf});
+                    for (int i = 1; i < ins_vector.size(); i++)
+                    {
+                        variable_DataMapper.insert({ins_vector[i], stf});
                     }
                 }
                 else if (tmp[0] == "take")
@@ -276,48 +294,61 @@ void fileVectorBuilder(std::string res)
         }
     }
 }
-std::string addSpaces(std::string stf,int freq){
-    for(int i=0;i<freq;i++){
+std::string addSpaces(std::string stf, int freq)
+{
+    for (int i = 0; i < freq; i++)
+    {
         stf = "\t" + stf;
     }
     return stf;
 }
-void conditionalBuilder(std::string parse){
-    int cnt=0,cnt2=0;
-    for(int i=0;i<parse.length();i++){
-        if(parse[i]=='?'){
+void conditionalBuilder(std::string parse)
+{
+    int cnt = 0, cnt2 = 0;
+    for (int i = 0; i < parse.length(); i++)
+    {
+        if (parse[i] == '?')
+        {
             cnt++;
         }
-        if (parse[i] == 'i' || parse[i] == 'e'){
+        if (parse[i] == 'i' || parse[i] == 'e')
+        {
             break;
         }
         cnt2++;
     }
-    if(parse[parse.length()-1]!='>'){
-        parse = parse.substr(cnt2,parse.length()-cnt2);
-        if(parse.substr(0,2)=="if"){
+    if (parse[parse.length() - 1] != '>')
+    {
+        parse = parse.substr(cnt2, parse.length() - cnt2);
+        if (parse.substr(0, 2) == "if")
+        {
             parse = parse + "{";
-            parse = addSpaces(parse,cnt);
+            parse = addSpaces(parse, cnt);
             codeSnippets.push_back(parse);
         }
         else if (parse.substr(0, 4) == "elif")
         {
             std::string sf = "else if";
-            parse = sf + parse.substr(4,parse.length()-4) +"{";
-            parse = addSpaces(parse,cnt);
-            codeSnippets.push_back(parse);
-        } else {
-            parse = "else {";
-            parse = addSpaces(parse,cnt);
+            parse = sf + parse.substr(4, parse.length() - 4) + "{";
+            parse = addSpaces(parse, cnt);
             codeSnippets.push_back(parse);
         }
-    } else {
+        else
+        {
+            parse = "else {";
+            parse = addSpaces(parse, cnt);
+            codeSnippets.push_back(parse);
+        }
+    }
+    else
+    {
         std::string stf = "}";
-        stf = addSpaces(stf,cnt);
+        stf = addSpaces(stf, cnt);
         codeSnippets.push_back(stf);
     }
 }
-void loopBuilders(std::string parse){
+void loopBuilders(std::string parse)
+{
     int cnt = 0, cnt2 = 0;
     for (int i = 0; i < parse.length(); i++)
     {
@@ -334,20 +365,22 @@ void loopBuilders(std::string parse){
     if (parse[parse.length() - 1] != '>')
     {
         parse = parse.substr(cnt2, parse.length() - cnt2);
-        if (parse[0]=='f')
+        if (parse[0] == 'f')
         {
-            for(int i=1;i<parse.length();i++){
-                if(parse[i]==','){
+            for (int i = 1; i < parse.length(); i++)
+            {
+                if (parse[i] == ',')
+                {
                     parse[i] = ';';
                 }
             }
-            parse = "for"+parse.substr(1,parse.length()-1)+"{";
+            parse = "for" + parse.substr(1, parse.length() - 1) + "{";
             parse = addSpaces(parse, cnt);
             codeSnippets.push_back(parse);
         }
-        else if (parse[0]=='w')
+        else if (parse[0] == 'w')
         {
-            parse = "while"+parse.substr(1,parse.length()-1) + "{";
+            parse = "while" + parse.substr(1, parse.length() - 1) + "{";
             parse = addSpaces(parse, cnt);
             codeSnippets.push_back(parse);
         }
@@ -367,12 +400,20 @@ int main()
     while (getline(readData, res))
     {
         res = removeWhitespace(res);
-        if(res.substr(0,2)=="<?" || res.substr(res.length()-2,2)=="?>"){
+        if(res.length()==0){
+            continue;
+        }
+        else if (res.substr(0, 2) == "<?" || res.substr(res.length() - 2, 2) == "?>")
+        {
+            // std::cout<<res.substr(res.length() - 2, 2)<<"\n";
             conditionalBuilder(res);
-        } else if(res.substr(0,2)=="<#" || res.substr(res.length()-2,2)=="#>"){
+        }
+        else if (res.substr(0, 2) == "<#" || res.substr(res.length() - 2, 2) == "#>")
+        {
             loopBuilders(res);
-        } 
-        else {
+        }
+        else
+        {
             fileVectorBuilder(res);
         }
     }
