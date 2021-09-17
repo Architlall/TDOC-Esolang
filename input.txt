@@ -1,18 +1,13 @@
 <htpl>
-    <in val/>
-    <take val/>
-    <? if (val<=3)
-        <?? if(val==2)
-            <% val = val * 100 %>
-        /??>
-        <?? else
-            <% val+=100 %> 
-        /??>
-    /?>
-    <? else (val>3)
-        <% val-=100 %>
-    /?>
-    <log>
-        val
-    </log>
+    <in i=0,j=0,n/>
+    <take n/>
+    <# w(i<=n) 
+        <## w(j<=i)
+            <log>#</log>
+            <% j++ %>
+        ##>
+        <% i++ %>
+        <% j=0 %>
+        <log>\n</log>
+    #>
 </htpl>
