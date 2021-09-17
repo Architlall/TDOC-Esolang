@@ -1,13 +1,20 @@
 <htpl>
-     <in val = 25463/>
-     <ch rc = 'a'/>
-     <log>
-        val
-    </log>
-     <log>
-        rc
-    </log>
-    <log>
-        Hello World
-    </log>
+    <main>
+        <in i=0,j=0,n/>
+        <take n/>
+        <# w(i<n) 
+            <## w(j<=i)
+                <? if(j%2==0)
+                    <log>#</log>
+                ?>
+                <? else
+                    <log>$\n</log>
+                ?>
+                <% j++ %>
+            ##>
+            <% i++ %>
+            <% j=0 %>
+            <log>\n</log>
+        #>
+    </main>
 </htpl>
