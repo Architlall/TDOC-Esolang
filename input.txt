@@ -1,6 +1,6 @@
 <htpl>
     <main>
-        <in i=0,j=0,n/>
+        <in i=0,j=0,n,val=45/>
         <take n/>
         <# w(i<n) 
             <## w(j<=i)
@@ -16,5 +16,6 @@
             <% j=0 %>
             <log>\n</log>
         #>
+        <log>val</log>
     </main>
 </htpl>

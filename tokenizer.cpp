@@ -61,7 +61,7 @@ void printlnParserStream()
         {
             if (variable_DataMapper.find(codeSnippets[i + 1]) != variable_DataMapper.end())
             {
-                codeSnippets[i] = codeSnippets[i].substr(0, 7) + '"' + varKey.find((varKey.find(variable_DataMapper.find(codeSnippets[i + 1])->second))->second)->second + '"' + "," + codeSnippets[i + 1] + ',' + codeSnippets[i].substr(7, 1) + codeSnippets[i + 2];
+                codeSnippets[i] = codeSnippets[i].substr(0, 7) + '"' + varKey.find((varKey.find(variable_DataMapper.find(codeSnippets[i + 1])->second))->second)->second + '"' + "," + codeSnippets[i + 1] + codeSnippets[i].substr(7, 1) + codeSnippets[i + 2];
                 codeSnippets.erase(codeSnippets.begin() + i + 1);
                 codeSnippets.erase(codeSnippets.begin() + i + 1);
             }
@@ -93,7 +93,7 @@ void fileVectorBuilder(std::string res)
         {
             codeSnippets.push_back(varKey.find("<main>")->second);
         }
-        else if (res.substr(0, 5) == "<log>" && (res.substr(5, res.length() - 5)).substr((res.substr(5, res.length() - 5)).length() - 6, 6) == "</log>")
+        else if (res!="<log>" && (res.substr(0, 5) == "<log>" && (res.substr(5, res.length() - 5)).substr((res.substr(5, res.length() - 5)).length() - 6, 6) == "</log>"))
         {
             codeSnippets.push_back(varKey.find("<log>")->second);
             int pos1 = res.find('>');
@@ -108,8 +108,7 @@ void fileVectorBuilder(std::string res)
         }
         else if (res == "</htpl>")
         {
-            std::cout << " "
-                      << "\n";
+            std::cout << " "<< "\n";
         }
         else if (res[1] == '/' && res.substr(2, 3) != "log")
         {
