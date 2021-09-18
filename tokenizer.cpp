@@ -93,6 +93,66 @@ void fileVectorBuilder(std::string res)
         {
             codeSnippets.push_back(varKey.find("<main>")->second);
         }
+        else if (res.substr(1,2) == "fx"){
+            std::string stf = "";
+           
+            // if(res.substr(4,5) == "in" || res.substr(4,5) == "ch"){
+                if(res[4] == 'i' || res[4] == 'c'){
+                std::cout<<"char"<<"\n";
+                if(res[4] == 'i') 
+                stf = stf + "int";
+                else if(res[4] == 'c')
+                
+                 stf = stf + "char";
+            for (int i = 6; i <= res.length(); i++)
+            {
+                if (res[i] != '>')
+                {
+                    stf = stf + res[i];
+                }
+                else
+                {
+                    stf = stf + '{';
+                    break;
+                    
+                }
+            }
+            
+            codeSnippets.push_back(stf);
+            }
+
+           else {
+                 for (int i = 3; i < res.length() - 2; i++)
+            {
+                if (res[i] != '>' )
+                {
+                    stf = stf + res[i];
+                }
+                else
+                {
+                    break;
+                }
+            }
+            stf = stf + ';';
+            codeSnippets.push_back(stf);
+           }
+
+        }
+        else if(res.substr(1,5) == "throw"){
+            std::cout<<res[7]<<"\n";
+            std::cout<<"whoaaa"<<"\n";
+            std::string stf = "";
+            std::string tmp = "";
+            for(int i=7;i<res.length();i++){
+                
+                if(res[i] == '/') break;
+                tmp = tmp + res[i];
+            }
+            stf = stf + "return " + tmp + ';';
+            codeSnippets.push_back(stf);
+
+        }
+        
         else if (res!="<log>" && (res.substr(0, 5) == "<log>" && (res.substr(5, res.length() - 5)).substr((res.substr(5, res.length() - 5)).length() - 6, 6) == "</log>"))
         {
             codeSnippets.push_back(varKey.find("<log>")->second);

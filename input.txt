@@ -1,21 +1,20 @@
 <htpl>
     <main>
-        <in i=0,j=0,n,val=45/>
+        <in val=0,j=0,i=0,n,a=8,b=5/>
         <take n/>
-        <# w(i<n) 
+        <fx val = func_name(param 1,param 2) />
+        <# f(i=0,i<n,i++) 
             <## w(j<=i)
-                <? if(j%2==0)
-                    <log>#</log>
-                ?>
-                <? else
-                    <log>$\n</log>
-                ?>
+                <log>#</log>
                 <% j++ %>
             ##>
             <% i++ %>
             <% j=0 %>
             <log>\n</log>
         #>
-        <log>val</log>
     </main>
+    <fx in func_name(in a,in b)>    
+       <% int c = a+b %>
+       <throw c/>
+    </func_name>
 </htpl>
