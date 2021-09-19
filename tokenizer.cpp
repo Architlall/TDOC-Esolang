@@ -67,27 +67,57 @@ void printlnParserStream()
     {
         if (codeSnippets[i] == "printf()" && (codeSnippets[i + 2][0] == ';'))
         {
-            if (variable_DataMapper.find(codeSnippets[i + 1]) != variable_DataMapper.end())
+            int pos;
+            std::string formatSpecifiers = "", varNames = "";
+            for (int j = 0; j < codeSnippets[i + 1].size(); j++)
             {
-                codeSnippets[i] = codeSnippets[i].substr(0, 7) + '"' + varKey.find((varKey.find(variable_DataMapper.find(codeSnippets[i + 1])->second))->second)->second + '"' + "," + codeSnippets[i + 1] + codeSnippets[i].substr(7, 1) + codeSnippets[i + 2];
-                codeSnippets.erase(codeSnippets.begin() + i + 1);
-                codeSnippets.erase(codeSnippets.begin() + i + 1);
+                if (codeSnippets[i + 1].substr(j, 2) == "${")
+                {
+                    pos = codeSnippets[i + 1].substr(j).find('}') + j;
+                    std::string varname = codeSnippets[i + 1].substr(j + 2, pos - (j + 2));
+                    if (variable_DataMapper.find(varname) != variable_DataMapper.end())
+                    {
+                        formatSpecifiers += varKey.find((varKey.find(variable_DataMapper.find(varname)->second))->second)->second;
+                        varNames += ((varNames == "") ? "" : ",") + varname;
+                    }
+                    else
+                    {
+                        formatSpecifiers += codeSnippets[i + 1].substr(j, pos - j + 1);
+                    }
+                    j = pos;
+                }
+                else
+                {
+                    formatSpecifiers += codeSnippets[i + 1][j];
+                }
             }
-            else
-            {
-                codeSnippets[i + 1] = '"' + codeSnippets[i + 1] + '"';
-                codeSnippets[i] = codeSnippets[i].substr(0, 7) + codeSnippets[i + 1] + codeSnippets[i].substr(7, 1) + codeSnippets[i + 2];
-                codeSnippets.erase(codeSnippets.begin() + i + 1);
-                codeSnippets.erase(codeSnippets.begin() + i + 1);
-            }
+            codeSnippets[i] = codeSnippets[i].substr(0, 7) + '"' + formatSpecifiers + '"' + ((varNames == "") ? "" : ",") + varNames + codeSnippets[i].substr(7, 1) + codeSnippets[i + 2];
+            codeSnippets.erase(codeSnippets.begin() + i + 1);
+            codeSnippets.erase(codeSnippets.begin() + i + 1);
         }
 
         else if (codeSnippets[i] == "scanf()")
         {
+            std::string varname = "", varNames = "", formatSpecifier = "";
+            codeSnippets[i + 1] += ' ';
+            for (int j = 0; j < codeSnippets[i + 1].size(); j++)
             {
-                codeSnippets[i] = codeSnippets[i].substr(0, 6) + '"' + varKey.find((varKey.find(variable_DataMapper.find(codeSnippets[i + 1])->second))->second)->second + '"' + "," + '&' + codeSnippets[i + 1] + ')' + ';';
-                codeSnippets.erase(codeSnippets.begin() + i + 1);
+
+                if ((codeSnippets[i + 1][j] != ',') && (codeSnippets[i + 1][j] != ' '))
+                {
+                    varname += codeSnippets[i + 1][j];
+                }
+                else
+                {
+                    formatSpecifier += varKey.find((varKey.find(variable_DataMapper.find(varname)->second))->second)->second + " ";
+                    varname = "&" + varname;
+                    varNames += ((varNames == "") ? "" : ",") + varname;
+                    varname = "";
+                }
             }
+            formatSpecifier = formatSpecifier.substr(0, formatSpecifier.length() - 1);
+            codeSnippets[i] = codeSnippets[i].substr(0, 6) + '"' + formatSpecifier + '"' + "," + varNames + ')' + ';';
+            codeSnippets.erase(codeSnippets.begin() + i + 1);
         }
     }
 }
@@ -151,7 +181,8 @@ void fileVectorBuilder(std::string res)
             }
             else
             {
-                res = res.substr(0, res.length() - 5);
+                std::cout << res << '\n';
+                res = res.substr(0, res.find('>') - 1);
                 for (int i = 0; i < res.length(); i++)
                 {
                     if (res[i] == '(' || res[i] == ')' || res[i] == ',')
@@ -164,6 +195,8 @@ void fileVectorBuilder(std::string res)
                     }
                 }
                 res = string_builder;
+                std::cout << res << '\n';
+                std::cout << res << '\n';
                 string_builder = "";
                 for (int i = 0; i < res.length(); i++)
                 {
