@@ -8,6 +8,7 @@ std::vector<std::string> codeSnippets;
 std::vector<std::string> conditionalRender;
 std::unordered_map<std::string, std::string> varKey;
 std::unordered_map<std::string, std::string> variable_DataMapper;
+std::vector<std::string> function_Signatures;
 void dataSet()
 {
     varKey.insert({"in", "int"});
@@ -30,6 +31,13 @@ void ouputFileReader()
     for (int i = 0; i < codeSnippets.size(); i++)
     {
         writeIn << codeSnippets[i] << "\n";
+        if (i == 0)
+        {
+            for (int j = 0; j < function_Signatures.size(); j++)
+            {
+                writeIn << (function_Signatures[j] + ";") << "\n";
+            }
+        }
     }
     writeIn.close();
 }
@@ -93,67 +101,118 @@ void fileVectorBuilder(std::string res)
         {
             codeSnippets.push_back(varKey.find("<main>")->second);
         }
-        else if (res.substr(1,2) == "fx"){
+        else if (res.substr(1, 2) == "fx")
+        {
             std::string stf = "";
-           
-            // if(res.substr(4,5) == "in" || res.substr(4,5) == "ch"){
-                if(res[4] == 'i' || res[4] == 'c'){
-                std::cout<<"char"<<"\n";
-                if(res[4] == 'i') 
-                stf = stf + "int";
-                else if(res[4] == 'c')
-                
-                 stf = stf + "char";
-            for (int i = 6; i <= res.length(); i++)
+            std::string string_builder = "";
+            int pos = res.find('x');
+            res = res.substr(pos + 1, res.length() - pos - 1);
+            if (res[res.length() - 1] == '>' && res[res.length() - 2] == '/')
             {
-                if (res[i] != '>')
+                res = res.substr(0, res.length() - 2);
+                for (int i = 0; i < res.length(); i++)
                 {
-                    stf = stf + res[i];
+                    if (res[i] == '(' || res[i] == ')' || res[i] == ',')
+                    {
+                        string_builder = string_builder + ' ' + res[i] + ' ';
+                    }
+                    else
+                    {
+                        string_builder += res[i];
+                    }
                 }
-                else
+                res = ' ' + string_builder;
+                string_builder = "";
+                for (int i = 0; i < res.length(); i++)
                 {
-                    stf = stf + '{';
-                    break;
-                    
+                    if (res[i] != ' ')
+                    {
+                        string_builder += res[i];
+                    }
+                    else
+                    {
+                        if (string_builder == "in" || string_builder == "ch")
+                        {
+                            stf += varKey.find(string_builder)->second + ' ';
+                        }
+                        else if (string_builder == "void")
+                        {
+                            stf += string_builder + ' ';
+                        }
+                        else
+                        {
+                            stf += string_builder;
+                        }
+                        string_builder = "";
+                    }
                 }
+                stf += ";";
+                codeSnippets.push_back(stf);
             }
-            
-            codeSnippets.push_back(stf);
-            }
-
-           else {
-                 for (int i = 3; i < res.length() - 2; i++)
+            else
             {
-                if (res[i] != '>' )
+                res = res.substr(0, res.length() - 5);
+                for (int i = 0; i < res.length(); i++)
                 {
-                    stf = stf + res[i];
+                    if (res[i] == '(' || res[i] == ')' || res[i] == ',')
+                    {
+                        string_builder = string_builder + ' ' + res[i] + ' ';
+                    }
+                    else
+                    {
+                        string_builder += res[i];
+                    }
                 }
-                else
+                res = string_builder;
+                string_builder = "";
+                for (int i = 0; i < res.length(); i++)
                 {
-                    break;
+                    if (res[i] != ' ')
+                    {
+                        string_builder += res[i];
+                    }
+                    else
+                    {
+                        if (string_builder == "in" || string_builder == "ch")
+                        {
+                            stf += varKey.find(string_builder)->second + ' ';
+                        }
+                        else if (string_builder == "void")
+                        {
+                            stf += string_builder + ' ';
+                        }
+                        else
+                        {
+                            stf += string_builder;
+                        }
+                        string_builder = "";
+                    }
                 }
+                function_Signatures.push_back(stf);
+                stf += "{";
+                codeSnippets.push_back(stf);
             }
-            stf = stf + ';';
-            codeSnippets.push_back(stf);
-           }
-
+            std::cout << res << "\n";
         }
-        else if(res.substr(1,5) == "throw"){
-            std::cout<<res[7]<<"\n";
-            std::cout<<"whoaaa"<<"\n";
+        else if (res.substr(1, 5) == "throw")
+        {
+            std::cout << res[7] << "\n";
+            std::cout << "whoaaa"
+                      << "\n";
             std::string stf = "";
             std::string tmp = "";
-            for(int i=7;i<res.length();i++){
-                
-                if(res[i] == '/') break;
+            for (int i = 7; i < res.length(); i++)
+            {
+
+                if (res[i] == '/')
+                    break;
                 tmp = tmp + res[i];
             }
             stf = stf + "return " + tmp + ';';
             codeSnippets.push_back(stf);
-
         }
-        
-        else if (res!="<log>" && (res.substr(0, 5) == "<log>" && (res.substr(5, res.length() - 5)).substr((res.substr(5, res.length() - 5)).length() - 6, 6) == "</log>"))
+
+        else if (res != "<log>" && (res.substr(0, 5) == "<log>" && (res.substr(5, res.length() - 5)).substr((res.substr(5, res.length() - 5)).length() - 6, 6) == "</log>"))
         {
             codeSnippets.push_back(varKey.find("<log>")->second);
             int pos1 = res.find('>');
@@ -168,7 +227,8 @@ void fileVectorBuilder(std::string res)
         }
         else if (res == "</htpl>")
         {
-            std::cout << " "<< "\n";
+            std::cout << " "
+                      << "\n";
         }
         else if (res[1] == '/' && res.substr(2, 3) != "log")
         {
@@ -459,7 +519,8 @@ int main()
     while (getline(readData, res))
     {
         res = removeWhitespace(res);
-        if(res.length()==0){
+        if (res.length() == 0)
+        {
             continue;
         }
         else if (res.substr(0, 2) == "<?" || res.substr(res.length() - 2, 2) == "?>")
