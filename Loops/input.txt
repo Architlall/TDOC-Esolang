@@ -1,0 +1,12 @@
+<htpl>
+    <main>
+        <in val,i,j/>
+        <take val/>
+        <# f(i=0,i<val,i++)
+            <## f(j=0,j<i,j++)
+                <log>@</log>
+            ##>
+            <log>\n</log>
+        #>
+    </main>
+</htpl>

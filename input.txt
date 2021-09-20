@@ -1,21 +1,14 @@
 <htpl>
     <main>
-        <in i=0,j=0,n,val=45/>
-        <take n/>
-        <# w(i<n) 
-            <## w(j<=i)
-                <? if(j%2==0)
-                    <log>#</log>
-                ?>
-                <? else
-                    <log>$\n</log>
-                ?>
-                <% j++ %>
-            ##>
-            <% i++ %>
-            <% j=0 %>
-            <log>\n</log>
-        #>
-        <log>val</log>
+        <in n,val/>
+        <ch f/>
+        <take n,val/>
+        <log>${n}\n</log>
+        <fx n = modify(n)/>
+        <log>${n}\n</log>
     </main>
+    <fx in modify(in param) >
+        <% param = param * 99 %>
+        <throw param/>
+    </modify>
 </htpl>
