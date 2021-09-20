@@ -1,0 +1,9 @@
+<htpl>
+    <main>
+        <in val,val1/>
+        <ch ch,ch1/>
+        <take val,ch,ch1,val1/>
+        <log>${ch1} ${val}</log>
+        <log>${ch} ${val1}</log>
+    </main>
+</htpl>

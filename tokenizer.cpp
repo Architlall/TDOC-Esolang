@@ -182,7 +182,7 @@ void fileVectorBuilder(std::string res)
             else
             {
                 std::cout << res << '\n';
-                res = res.substr(0, res.find('>') - 1);
+                res = res.substr(0, res.find('>'));
                 for (int i = 0; i < res.length(); i++)
                 {
                     if (res[i] == '(' || res[i] == ')' || res[i] == ',')

@@ -1,0 +1,7 @@
+<htpl>
+    <main>
+        <in val=9 />
+        <% val = val * 100 + 56 / val - 90 & val %>
+        <log>${val}\n</log>
+    </main>
+</htpl>
