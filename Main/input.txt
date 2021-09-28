@@ -1,6 +1,7 @@
 <htpl>
     <main>
         <in val,val1,res/>
+        <log>Enter the 2 values to get gcd \n</log>
         <take val,val1/>
         <? if(val>val1)
             <fx res=gcd_algo(val1,val) />

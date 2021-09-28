@@ -1,6 +1,5 @@
 #!/bin/bash
 
-cd ..
 cd Main
 make
 ./tokenizer $1

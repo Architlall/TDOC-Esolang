@@ -195,8 +195,6 @@ void fileVectorBuilder(std::string res)
                     }
                 }
                 res = string_builder;
-                //std::cout << res << '\n';
-                //std::cout << res << '\n';
                 string_builder = "";
                 for (int i = 0; i < res.length(); i++)
                 {
