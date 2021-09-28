@@ -17,6 +17,7 @@ So we would be building a new esoteric (basically means crazy af) language that 
 
 
 So here we shall go step by step and understand how to transpile our code in any format to a proper C code for easier reference. We have used a simple language like HTML to work with.
+
 ## Step 0 : Basics 
 
 ### An inbuilt Database :
@@ -59,13 +60,13 @@ For example the initial tag “<htpl>” this can help us include a basic syntac
 
 ### Pseudocode : 
 
-Function(string_param)
+    Function(string_param)
 
     Search in the collection of tuples for the matching tag here htpl as a key
 
     Returns a value stored as a second parameter in the tuple
 
-Write the value to the output file.
+    Write the value to the output file.
 
 
 Now, the next line in the filereader reads is the <log> line here, we observe there is a huge number of spaces before it , so this might take unusual time to get to the actual value as these spaces in a hypothetical situation can reach any number so to increase the efficiency of the code as well as make it easier to work with any language we shall strip the spaces from each of the string lines and make it possible for use to work only with the required fields.
@@ -73,10 +74,10 @@ This can be done using a helper function that takes in a string and returns a st
 
 ### Pseudocode :
 
-Function(string param)
-	Iterate via the string 
-		Remove spaces until a character is found
-Return result_string
+	Function(string param)
+		Iterate via the string 
+			Remove spaces until a character is found
+	Return result_string
 
 Now in this case we have a string with log as <log>(word)</log>, so the only way to parse it is breaking the string in parts and getting the required portion in this case checking for a keyword “log” that in our tuple collection stores a value of PRINT statement,
 
@@ -108,10 +109,11 @@ Say a list has the contents for the print statement parsed as :
 
  [	{ 	“print()“	}  ,  {	“Material to be inserted”	}  ,  {	  “;”	 }];
 
-```
 
 So it can be parsed as ==========>  [ { “ print(“material---------”); “ } ] 
-and then re-inserted at the head node whereas removing the already present nodes.
+```
+	
+Then re-inserted at the head node whereas removing the already present nodes.
 
 This way we can create a simple printing program in our language.
  
