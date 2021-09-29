@@ -17,7 +17,6 @@ So we would be building a new esoteric (basically means crazy af) language that 
 
 
 So here we shall go step by step and understand how to transpile our code in any format to a proper C code for easier reference. We have used a simple language like HTML to work with.
-
 ## Step 0 : Basics 
 
 ### An inbuilt Database :
@@ -60,13 +59,13 @@ For example the initial tag “<htpl>” this can help us include a basic syntac
 
 ### Pseudocode : 
 
-    Function(string_param)
+Function(string_param)
 
     Search in the collection of tuples for the matching tag here htpl as a key
 
     Returns a value stored as a second parameter in the tuple
 
-    Write the value to the output file.
+Write the value to the output file.
 
 
 Now, the next line in the filereader reads is the <log> line here, we observe there is a huge number of spaces before it , so this might take unusual time to get to the actual value as these spaces in a hypothetical situation can reach any number so to increase the efficiency of the code as well as make it easier to work with any language we shall strip the spaces from each of the string lines and make it possible for use to work only with the required fields.
@@ -74,10 +73,10 @@ This can be done using a helper function that takes in a string and returns a st
 
 ### Pseudocode :
 
-	Function(string param)
-		Iterate via the string 
-			Remove spaces until a character is found
-	Return result_string
+Function(string param)
+	Iterate via the string 
+		Remove spaces until a character is found
+Return result_string
 
 Now in this case we have a string with log as <log>(word)</log>, so the only way to parse it is breaking the string in parts and getting the required portion in this case checking for a keyword “log” that in our tuple collection stores a value of PRINT statement,
 
@@ -109,11 +108,55 @@ Say a list has the contents for the print statement parsed as :
 
  [	{ 	“print()“	}  ,  {	“Material to be inserted”	}  ,  {	  “;”	 }];
 
+```
 
 So it can be parsed as ==========>  [ { “ print(“material---------”); “ } ] 
-```
-	
-Then re-inserted at the head node whereas removing the already present nodes.
+and then re-inserted at the head node whereas removing the already present nodes.
 
 This way we can create a simple printing program in our language.
  
+## Step 2 : Working with Data Types and  Input/Output
+
+//Take vars here...........
+
+
+Now a programming language is incomplete without providing a base to specify its variables as anything that we write must have a meaning so to use certain variables for different purposes, in CReact an easy and simple method to define data types and introduce similarity with other programming languages we have created some predefined datatypes so that we can work with alphanumeric values :
+
+It is generally defined using keywords like "in" and "ch" with denotes the integer and character respectively in CReact , for making things more craxy u can define it yourselves as anything u wish to..
+
+Maintaing the norms of React a variable can be statically initialised with a value under a self closing bracket value : 
+
+### Syntax
+
+```
+    For static allocation : 
+    < data_type variable_name = value />
+
+    For Dynamically allocation it can be written as : 
+    < data_type variable_name, variable_name1 />
+
+    Example -> For integers it can be written as :  <in val = 75/> 
+
+```
+
+Now to parse this we have to update our tuple data - collection my adding another tuple that can convert the defined identifier to the datatype and while reading the string statement just replace that with the value from the collection and parse that statement into the temporary storage container to push into the file at the end..
+
+The second part comes into initializing the same into our lang of choice when required , for eg in C we use different identifiers when taking input like for
+ 
+* Interger is denoted by %d in C
+* Character is denoted by %c in C
+
+So in the tuple collector we shall initialize these indentifiers with that of respective datatypes and while taking input using **<take var_name />** just write insert
+respective identifier and re configure the string in the same order as : 
+
+```
+    <take var_name/>
+    scanf("\\identifier\\",&var_name);
+    
+```
+As this specific practice is followed in C language and this whole string is inserted into the temp_container to write afterwards in the file...
+
+
+
+///Print vars after this....
+
