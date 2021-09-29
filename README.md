@@ -156,7 +156,49 @@ respective identifier and re configure the string in the same order as :
 ```
 As this specific practice is followed in C language and this whole string is inserted into the temp_container to write afterwards in the file...
 
+### Printing Multi Variables
 
+In this language es6 standards for formatting and printing the expresstion is used here, i.e. using ${varName}
 
-///Print vars after this....
+### Syntax
+	
+    ```
+        <log> ${varName1} ${varName2} </log>
+    ```
 
+For example :-
+	
+```
+	<htpl>
+	    <in a=3,b=4 />
+	    <log>
+		Printing value of a and b : ${a} ${b}
+	    </log>
+	</htpl>
+	
+```
+
+In the log function the string between the htpl log tags are parsed into an equivalent format string statement one letter at a time until it has encountered a "${" string  
+
+### Pseodocode:
+
+	Function(string param)
+	    Let str be an empty string to hold result
+	    Iterate 1 letter at a time over the string
+	    if (given letter word is equal to '$' and next letter is '{')
+		search for variables declared before with the name between the braces 
+		if search was successful
+		    add appropriate modifier to str
+		else 
+		    add string including the braces as it is to str
+	    else
+		add string as it is to str
+	Return str
+
+The code in the above example converts into a format string 
+    for eg in C
+        ("Printing value of a and b : %d %d",a,b)
+    while in python it would look like:
+        f'Printing value of a and b : {a} {b}'
+
+This formatted string along with with their variable names are passed onto their respective print statements hence facilitating multi-variable output
