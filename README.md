@@ -117,7 +117,39 @@ This way we can create a simple printing program in our language.
  
 ## Step 2 : Working with Data Types and  Input/Output
 
-//Take vars here...........
+Taking user input is a very basic task that is expected of our esolang. For convinience let us assume that we have already declared a variable of integer type (we will see how to do that later in this section).
+
+To understand how to achieve this, our first step is to decide what our user input syntax is going to look like. In CReact, the syntax that we have defined is as follows :
+
+```
+    declare the integer variable named var
+    <take var/>
+```
+
+Our motive is to parse this syntax is such a way, that the desired output in our C file looks like :
+
+```
+    declared variable var
+    scanf("%d",&var);
+```
+
+To execute the above mentioned translation, we use string manipulation to extract the word “take” to get the statement scan identifier of the result programming language(scanf in our case) from the predefined map, which can be inserted in the output file. 
+
+Whereas the respective closing tag which can be distinguished with a starting 2 indexes of “<\”
+It can be replaced by any sequence user likes say “); for C”, or simply “)” for python or Js, in similar way the material to be inserted can be extracted by manipulating the strings.
+
+Now, very similar to the fashion in which we implemented the print function above, we have to use a dynamic array or list that stores the parsed values.
+
+Say a list has the contents for the print statement parsed as :
+```
+ [	{ 	“scanf()“	}  ,  {	“variable_name”	}  ,  {	  “;”	 }];
+```
+
+So it can be parsed as ==========>  [ { “ scanf(“variable_name---------”); “ } ] 
+and then re-inserted at the head node whereas removing the already present nodes.
+
+This is how we achieve a basic implementation of user input in our esolang.
+
 
 
 Now a programming language is incomplete without providing a base to specify its variables as anything that we write must have a meaning so to use certain variables for different purposes, in CReact an easy and simple method to define data types and introduce similarity with other programming languages we have created some predefined datatypes so that we can work with alphanumeric values :
