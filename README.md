@@ -74,11 +74,11 @@ For this we can implement a basic loop function that reads the string and as a c
 
 Now working with tags:
 
-Here the 1st thing which is the <htpl> tag basically is a constant keyword identifier, as it will be always wriiten to start coding in your esolang..
+Here the 1st thing which is the **<htpl>** tag basically is a constant keyword identifier, as it will be always wriiten to start coding in your esolang..
 
 So for that instance we can store the appropriate code for this specific tag in our globally defined tuple collection and on recognising this specific tag can push the appropriate code inside our result-container which will be pushed in the parsed file later.
 
-Now in this case we have a string with log as <log>(word)</log>, so the only way to parse it is breaking the string in parts and getting the required portion in this case checking for a keyword “log” that in our tuple collection stores a value of PRINT statement,
+Now in this case we have a string with log as **<log>(word)</log>**, so the only way to parse it is breaking the string in parts and getting the required portion in this case checking for a keyword “log” that in our tuple collection stores a value of PRINT statement,
 
 So using string manipulation extracting the word “log” we can get the statement print identifier of the result programming language; it can be “printf for C”, “System.out.print for Java” or “console.log for Javascript” etc which can be inserted in the container.
 
