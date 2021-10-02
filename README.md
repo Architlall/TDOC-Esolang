@@ -32,15 +32,14 @@ Ex-Tuple Container : [{“html”:”#include”},{ “h1”:”headers”} ,...
 
 ### File Input/Output in programming : 
 
-Now this is one of the most important portions of the code, as we shall be writing the code on a .txt file so your transpiler shall read the esolang-code from the file line by line and parse each line as collection of characters.
 
 While handling files we should take care of the commands that are used with them,which generally are associated with read/write operations..
 
 In Read only operations it can read each line of string which is written in another file and character by character arranges it to form each line in the file
 
-In Write Operations we can modify the file by inscribing out given texts in the file and changing the file from the parent file.
+In write operations, we can work out by rendering or parsing the text lines by manipulating the string statements and writing them in a file.
 
-In the given objective we shall use both operations , first reading from the input txt file and parsing each sentence and writing it on another file which is compiled as a C file then gives the output.
+In the project as we shall be writing the code on a .txt file so your transpiler script shall read the esolang-code from the file line by line and parse each line as collection of characters, so here we shall take each line as an input from the base .txt file and parse it accordingly and store it in a container which shall allow us to make changes in the placement of values whenever writing in th result file at last (this seems un-necessary and rather it is more practical to just inject code inside the output file directly but there's a catch to do so which we'll get through later..)
 
 ## Step 1 : INITIAL STEPS : WRITING A HELLO WORLD OR PRINTING PROGRAM IN  THE ESOLANG
 
@@ -48,45 +47,46 @@ In the given objective we shall use both operations , first reading from the inp
 The given eso-lang follows a HTML syntax construct so for example we have used here the following syntax : 
 
 ```
-<htpl>
-    <log>Hello World </log>
-</htpl>
+
+    <htpl>
+        <main>
+            <log>Hello World </log>
+        </main>
+    </htpl>
 
 ```
-Now in this code we are just printing a statement but initial setting is also of utmost importance.
-For example the initial tag “<htpl>” this can help us include a basic syntactical header to start with coding as in any kind of input file htpl tag is permanent so here this string can be stored in the tuple database and can be used to return a set of other strings that begins to code in the preferred language.
+The snippet is a very simple code so lets de-structure it to understnad the working bts.
 
+The principle thing is removing the initial spaces from each string line, reason being we just require what's given the extra spaces will only cause a hindrance so its better to remove them & only work with what's required..
 
-### Pseudocode : 
+For this we can implement a basic loop function that reads the string and as a character other than "  " is encountered would refactor itself..
 
-Function(string_param)
+### Pseudocode 
 
-    Search in the collection of tuples for the matching tag here htpl as a key
+```
+    INPUT a string variable
+    FOR i in string_var
+        IF i != ' '
+            string_var = string_var[i,length of string_var-i]
+            BREAK
 
-    Returns a value stored as a second parameter in the tuple
+``` 
 
-Write the value to the output file.
+Now working with tags:
 
+Here the 1st thing which is the <htpl> tag basically is a constant keyword identifier, as it will be always wriiten to start coding in your esolang..
 
-Now, the next line in the filereader reads is the <log> line here, we observe there is a huge number of spaces before it , so this might take unusual time to get to the actual value as these spaces in a hypothetical situation can reach any number so to increase the efficiency of the code as well as make it easier to work with any language we shall strip the spaces from each of the string lines and make it possible for use to work only with the required fields.
-This can be done using a helper function that takes in a string and returns a string stripped of initial spaces…
-
-### Pseudocode :
-
-Function(string param)
-	Iterate via the string 
-		Remove spaces until a character is found
-Return result_string
+So for that instance we can store the appropriate code for this specific tag in our globally defined tuple collection and on recognising this specific tag can push the appropriate code inside our result-container which will be pushed in the parsed file later.
 
 Now in this case we have a string with log as <log>(word)</log>, so the only way to parse it is breaking the string in parts and getting the required portion in this case checking for a keyword “log” that in our tuple collection stores a value of PRINT statement,
 
-So using string manipulation extracting the word “log” we can get the statement print identifier of the result programming language; it can be “printf for C”, “System.out.print for Java” or “console.log for Javascript” etc which can be inserted in  the output file.
+So using string manipulation extracting the word “log” we can get the statement print identifier of the result programming language; it can be “printf for C”, “System.out.print for Java” or “console.log for Javascript” etc which can be inserted in the container.
 
 Whereas the respective closing tag which can be distinguished with a starting 2 indexes of “<\”
 It can be replaced by any sequence user likes say “); for C”, or simply “)” for python or Js, in similar way the material to be inserted can be extracted by manipulating the strings.
 
-Now arises a concern if we are constantly just checking then parsing appropriately and writing to the output file there’s high chance we won’t get another chance to modify the data is required say we have printing as :
-Bordercase to consider : 
+Now arises a concern say we are printing a large number of words as shown as :
+
 ```
 
 <log> (some words --------------------------------------------
@@ -96,26 +96,31 @@ Bordercase to consider :
 
 ```
 
-Here we can’t simply extract the string in between and work on it as each line is read separately so for this reason we can extract part of the string having the tags opening/closing and adding on to it to construct the whole string…
+Here we can’t simply extract the string in between and work on it as each line is read separately so for this reason we can extract part of the string having the tags opening/closing and adding on to it to construct the whole paragraph present between the log tags…
 
-So this points out that simply parsing and writing in an output file won’t do for that we have another solution which is using a dynamic array or list that stores the parsed values in their pattern so that if there are some deeper manipulations required then we can handle that before scripting it on the output file.
+So this points out that simply parsing and writing in an output file won’t do for that we have another solution which is using that same conatiner in which we are storing the parsed values accordingly in a specific pattern so that it can be arranged to get the desired parsed code in the output file..
+
 The list shall store in the strings inside it which is to be inserted and at the creation and scripting period would be activated to fill in the string nodes line after line.
 
-A basic example : 
+The printf implementation : 
 
-Say a list has the contents for the print statement parsed as :
+
 ```
 
- [	{ 	“print()“	}  ,  {	“Material to be inserted”	}  ,  {	  “;”	 }];
+    [	{ 	“print()“	}  ,  {	“Material to be inserted i.e connected parts of a multiline <log> ”	}  ,  {	  “;”	 }];
 
 ```
 
 So it can be parsed as ==========>  [ { “ print(“material---------”); “ } ] 
+
 and then re-inserted at the head node whereas removing the already present nodes.
 
 This way we can create a simple printing program in our language.
- 
+
+
 ## Step 2 : Working with Data Types and  Input/Output
+
+
 
 Taking user input is a very basic task that is expected of our esolang. For convinience let us assume that we have already declared a variable of integer type (we will see how to do that later in this section).
 
@@ -234,3 +239,49 @@ The code in the above example converts into a format string
         f'Printing value of a and b : {a} {b}'
 
 This formatted string along with with their variable names are passed onto their respective print statements hence facilitating multi-variable output
+
+## Step 3: Conditional Statements
+
+Whenever we have to implement a logic it doesn't end with just mathematical operations, sometimes to check whether what we are working with is logically apt or not generally we use an if-else block that makes it easier to question and follow a certain pathway in that manner.
+
+Any mordern day programming language is always equipped with the power to question a certain course of action and chalk out a working plan accordingly, this helps us execute tasks in a much more simpler way and integrate segmented code to make it multi functional.
+
+In basic programming lang a simple if-else block is generally written as :
+```
+Pseudocode :
+
+    IF(cond1)
+        Execute this part
+    ELSE IF(cond2)
+        Execute this part
+    ELSE
+        Execute this last part
+
+```
+
+In our CReact Esolang to make things more intutive and much more simpler to understand we follow the following syntax :
+
+```
+If block clause :
+
+    <? if(cond1)
+        statement1
+    ?>
+    <? elif(cond2)
+        statement2
+    ?>
+
+```
+
+Take it as a fragment that renders an if else construct to work with, here we shall first look for the special tag such that the angular brackets have "?" inside it which triggers a function that works with conditionals, here we shall strip down the spaces again, this shall then give us only the required string to work with, after which we shall look for some general keyword associated with conditionals and look for them to properly format the substring to arrage the condition properly and add an opening a "{" then push in the required statements inside temp-container and use the last identifier "?>" that can push in the required the closing bracket as "}".
+ 
+### A basic conversion:
+
+ ```
+                        <? if(cond1)              if(cond1){
+                            statement1               statement1;
+                        ?>                        }
+
+ ```
+
+Now to add to more functionality we shall implement nested conditions in the if-else block and differentiate it from the outside marker we shall implement another   
