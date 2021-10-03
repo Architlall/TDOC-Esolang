@@ -1,7 +1,48 @@
 <htpl>
     <main>
-        <in val=9 />
-        <% val = val * 100 + 56 / val - 90 & val %>
-        <log>${val}\n</log>
+        <take vec fast/>
+        \\
+        \\
+        \\
+        fast.plus(value)
+        - create
+        - value
+        \\
+        \\
+        \\
+        vec.plus(value1)
+        \\
+        \\
+        vec.plus(value)
+        \\
+        \\
+        vec[3]
+        \\
+        \\
+        vec.minus(value)
+        \\
+        \\
+        \\
+        vec.plus(value)
     </main>
 </htpl>
+#include<stdio.h>
+\\\\
+int gt = 0;
+main(){
+    int fast[size_of_darray]
+    \\
+    \\
+    \\
+    fast[gt++] = value;
+    fast[0] = value;
+    \\
+    \\
+    \\
+    fast[]
+} 
+
+int arr[n]
+for(i, 0->n, i++){
+    arr[i] = value
+}
