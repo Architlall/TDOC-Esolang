@@ -3,12 +3,15 @@
 #include <algorithm>
 #include <vector>
 #include <unordered_map>
+
 std::unordered_map<std::string, std::pair<std::string, std::string>> varStore;
 std::vector<std::string> codeSnippets;
 std::vector<std::string> conditionalRender;
 std::unordered_map<std::string, std::string> varKey;
 std::unordered_map<std::string, std::string> variable_DataMapper;
 std::vector<std::string> function_Signatures;
+std::vector<std::string> vector_Container;
+std::vector<std::string> global_vars;
 void dataSet()
 {
     varKey.insert({"in", "int"});
@@ -30,12 +33,21 @@ void ouputFileReader()
     std::ofstream writeIn("output.c");
     for (int i = 0; i < codeSnippets.size(); i++)
     {
-        writeIn << codeSnippets[i] << "\n";
-        if (i == 0)
-        {
-            for (int j = 0; j < function_Signatures.size(); j++)
+       {
+            writeIn << codeSnippets[i] << "\n";
+            if (i == 0)
             {
-                writeIn << (function_Signatures[j] + ";") << "\n";
+                if (vector_Container.size() != 0)
+                {
+                    for (int b = 0; b < vector_Container.size(); b++)
+                    {
+                        writeIn << (vector_Container[b]);
+                    }
+                }
+                for (int j = 0; j < function_Signatures.size(); j++)
+                {
+                    writeIn << (function_Signatures[j] + ";") << "\n";
+                }
             }
         }
     }
@@ -257,7 +269,8 @@ void fileVectorBuilder(std::string res)
         }
         else if (res == "</htpl>")
         {
-            std::cout << " " << "\n";
+            std::cout << " "
+                      << "\n";
         }
         else if (res[1] == '/' && res.substr(2, 3) != "log")
         {
@@ -540,10 +553,43 @@ void loopBuilders(std::string parse)
         codeSnippets.push_back(stf);
     }
 }
-int main(int argc, char const *argv[])
+void vectorBuilder(std::string res)
+{
+    res = res.substr(2, res.length() - 4);
+    if (res.find('$') != std::string::npos && res.substr(res.find('$'), 6) == "$tream" && vector_Container.empty())
+    {
+        std::string sthelp = "struct Node *" + res.substr(res.find('$') + 7, res.length() - (res.find('$') + 7));
+        sthelp+="= NULL";
+        codeSnippets.push_back(sthelp + ";");
+        std::ifstream readParts("helper.txt");
+        std::string parts;
+        while (getline(readParts, parts))
+        {
+            vector_Container.push_back(parts + "\n");
+        }
+    }
+    else
+    {
+        long long int pos = res.find('.');
+        std::string varname = res.substr(0, pos);
+        std::string valname = res.substr(res.find('[') + 1, res.find(']') - res.find('[') - 1);
+        std::string funcname = res.substr(pos + 1, res.find('[') - pos - 1);
+        std::string::iterator end_pos = std::remove(funcname.begin(), funcname.end(), ' ');
+        funcname.erase(end_pos, funcname.end());
+        std::string::iterator end_pos1 = std::remove(valname.begin(), valname.end(), ' ');
+        valname.erase(end_pos1, valname.end());
+        if (funcname == "plus")
+            codeSnippets.push_back(funcname + "(&" + varname + "," + valname + ")" + ";");
+        else
+            codeSnippets.push_back(funcname + "(&" + varname + ")" + ";");
+    }
+}
+//int main(int argc, char const *argv[])
+int main()
 {
     std::string res;
-    std::ifstream readData(argv[1]);
+    //std::ifstream readData(argv[1]);
+    std::ifstream readData("input.txt");
     int switch_btn = 0;
     while (getline(readData, res))
     {
@@ -559,6 +605,10 @@ int main(int argc, char const *argv[])
         else if (res.substr(0, 2) == "<#" || res.substr(res.length() - 2, 2) == "#>")
         {
             loopBuilders(res);
+        }
+        else if (res.substr(0, 2) == "<<")
+        {
+            vectorBuilder(res);
         }
         else
         {

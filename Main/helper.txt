@@ -1,0 +1,66 @@
+#include <stdlib.h>
+struct Node
+{
+    int data;
+    struct Node *next;
+};
+void showoff(struct Node **head)
+{
+    while ((*head)->next != NULL)
+    {
+        printf("%d ", (*head)->data);
+        (*head) = (*head)->next;
+    }
+    printf("%d ", (*head)->data);
+    printf("\n");
+}
+long long int size(struct Node **head)
+{
+    long long int cnt=0;
+    while ((*head)->next != NULL)
+    {
+        cnt++;
+        (*head) = (*head)->next;
+    }
+    return cnt;
+}
+void plus(struct Node **head, int val)
+{
+    struct Node *ptr = (struct Node *)malloc(sizeof(struct Node));
+    ptr->data = val;
+    if ((*head) == NULL)
+    {
+        (*head) = ptr;
+    }
+    else
+    {
+        struct Node *temp = *head;
+        while (temp->next != NULL)
+        {
+            temp = temp->next;
+        }
+        temp->next = ptr;
+        ptr->next = NULL;
+    }
+}
+void minus(struct Node **head){
+    struct Node *ptr = *head;
+    while(ptr->next->next!=NULL){
+        ptr=ptr->next;
+    }
+    ptr->next = NULL;
+}
+int search(struct Node **head, int pos)
+{
+    struct Node *temp_ptr = *head;
+    int post = 0;
+    while (temp_ptr != NULL)
+    {
+        temp_ptr = temp_ptr->next;
+        post++;
+        if(post==pos){
+            return temp_ptr->data;
+        }
+    }
+    return 0;
+}
