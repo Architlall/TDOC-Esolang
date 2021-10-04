@@ -50,8 +50,29 @@ void minus(struct Node **head){
     }
     ptr->next = NULL;
 }
+void update(struct Node **head, int pos,int val)
+{
+    if(pos==0){
+        (*head)->data = val;
+    } else {
+        struct Node *temp_ptr = *head;
+        int post = 0;
+        while (temp_ptr != NULL)
+        {
+            temp_ptr = temp_ptr->next;
+            post++;
+            if(post==pos){
+                temp_ptr->data = val;
+                break;
+            }
+        }
+    }
+}
 int search(struct Node **head, int pos)
 {
+    if(pos==0){
+        return (*head)->data;
+    } 
     struct Node *temp_ptr = *head;
     int post = 0;
     while (temp_ptr != NULL)

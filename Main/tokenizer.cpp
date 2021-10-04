@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <vector>
 #include <unordered_map>
-
 std::unordered_map<std::string, std::pair<std::string, std::string>> varStore;
 std::vector<std::string> codeSnippets;
 std::vector<std::string> conditionalRender;
@@ -33,7 +32,7 @@ void ouputFileReader()
     std::ofstream writeIn("output.c");
     for (int i = 0; i < codeSnippets.size(); i++)
     {
-       {
+        {
             writeIn << codeSnippets[i] << "\n";
             if (i == 0)
             {
@@ -53,7 +52,12 @@ void ouputFileReader()
     }
     writeIn.close();
 }
-
+std::string removeInnerspace(std::string params)
+{
+    std::string::iterator end_pos = std::remove(params.begin(), params.end(), ' ');
+    params.erase(end_pos, params.end());
+    return params;
+}
 //Removes beginning whitespaces from each line
 std::string removeWhitespace(std::string req)
 {
@@ -87,8 +91,24 @@ void printlnParserStream()
                 {
                     pos = codeSnippets[i + 1].substr(j).find('}') + j;
                     std::string varname = codeSnippets[i + 1].substr(j + 2, pos - (j + 2));
-                    if (variable_DataMapper.find(varname) != variable_DataMapper.end())
+                    if (varname.find('[') != std::string::npos && varname.find(']') != std::string::npos)
                     {
+                        std::string val = varname.substr(varname.find('[') + 1, varname.find(']') - varname.find('[') - 1);
+                        varname = varname.substr(0, varname.find('['));
+                        //std::cout << val << " " << varname << "\n";
+                        std::string xc = "search(&";
+                        // for (auto it : variable_DataMapper)
+                        // {
+                        //     std::cout << it.first << " " << it.second << "\n";
+                        // }
+                        formatSpecifiers += varKey.find((varKey.find(variable_DataMapper.find(varname)->second))->second)->second;
+                        varNames = varNames + (((varNames == "") ? "" : ",") + xc + varname + "," + val + ")");
+                        std::cout << formatSpecifiers << "\n";
+                        std::cout << varNames << "\n";
+                    }
+                    else if (variable_DataMapper.find(varname) != variable_DataMapper.end())
+                    {
+
                         formatSpecifiers += varKey.find((varKey.find(variable_DataMapper.find(varname)->second))->second)->second;
                         varNames += ((varNames == "") ? "" : ",") + varname;
                     }
@@ -277,7 +297,7 @@ void fileVectorBuilder(std::string res)
             res = "/";
             codeSnippets.push_back(varKey.find(res)->second);
         }
-        else if (res[1] == '%')
+        else if (res[1] == '%' && res.find('[') == std::string::npos && res.find(']') == std::string::npos)
         {
             std::vector<std::string> tmp;
             std::string stf = "";
@@ -294,6 +314,24 @@ void fileVectorBuilder(std::string res)
             }
             stf = stf + ';';
             codeSnippets.push_back(stf);
+        }
+        else if (res[1] == '%' && res.find('[') != std::string::npos && res.find(']') != std::string::npos)
+        {
+            res = res.substr(2, res.length() - 4);
+            long long int eqpos = res.find('='), brackpos = res.find('[');
+            if (brackpos > eqpos)
+            {
+                std::string val = res.substr(res.find('[') + 1, res.find(']') - res.find('[') - 1);
+                std::string var = res.substr(res.find('=')+1, res.find('[') - res.find('=')-1);
+                codeSnippets.push_back(removeInnerspace(res.substr(0, res.find('=') + 1)) + "search(&" + removeInnerspace(var) + "," + removeInnerspace(val) + ")" + ";");
+            }
+            else
+            {
+                std::string val = res.substr(res.find('[') + 1, res.find(']') - res.find('[') - 1);
+                std::string var = res.substr(0, res.find('['));
+                std::string nwval = res.substr(res.find('=') + 1, res.length() - res.find('='));
+                codeSnippets.push_back("update(&" + removeInnerspace(var) + "," + removeInnerspace(val) + "," + removeInnerspace(nwval) + ")" + ";");
+            }
         }
         else if (res[res.length() - 1] == '>' && res[res.length() - 2] == '/')
         {
@@ -558,8 +596,17 @@ void vectorBuilder(std::string res)
     res = res.substr(2, res.length() - 4);
     if (res.find('$') != std::string::npos && res.substr(res.find('$'), 6) == "$tream" && vector_Container.empty())
     {
-        std::string sthelp = "struct Node *" + res.substr(res.find('$') + 7, res.length() - (res.find('$') + 7));
-        sthelp+="= NULL";
+        std::string stGetType = res.substr(res.find('$') + 7, 2);
+        // std::cout<<stGetType<<"\n";
+        // std::cout << stGetType << " " << varKey.find(stGetType)->second << "\n";
+        variable_DataMapper.insert({removeInnerspace(res.substr(res.find('>') + 1, res.length() - (res.find('>') + 1))), stGetType});
+        // for (auto it : variable_DataMapper)
+        // {
+        //     std::cout << it.first << " " << it.second << "\n";
+        // }
+        //std::cout << stGetType << " " << varKey.find(stGetType)->second << "\n";
+        std::string sthelp = "struct Node *" + removeInnerspace(res.substr(res.find('>') + 1, res.length() - (res.find('>') + 1)));
+        sthelp += "= NULL";
         codeSnippets.push_back(sthelp + ";");
         std::ifstream readParts("helper.txt");
         std::string parts;
