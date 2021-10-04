@@ -307,4 +307,23 @@ Here if you can see a pattern if the nested condition increases so does the numb
 So that's how we develop the power of conditions in our programming language.
 
 
+## Step 2 : Implementing arithmetic operations
+
+An esolang is clearly incomplete if it cannot perform all the basic mathematical operations. Since we are following the syntax of HTML, we needed a specific way to tell the transpiler that the following line to be parsed is a mathemtical operation. So the operator that we have used is '%'.
+
+```
+    An example of a mathematical statement in Creact :
+
+    <% x = (x+(2*y)/z) %>
+    
+```
+
+Achieving this transpilation is significantly simpler than you might be thinking. Note that we are just making a transpiler and not an actual compiler. So we just need to parse the statement and translate it to C/C++ and the gcc call does the rest of the work for us. 
+
+So we parse the line after checking the presence of '%', and then transpile the mathematical statement with the help of a temporary vector to push into the parent vector string that must be transpiled. One point of caution in such parsing is checking that the spaces between different terms don't affect the process of parsing. Using the brute force method to check positions will not help and may lead to the code crashing. So instead use a temporary vector to push the different characters.
+
+In conclusion, we perform all the mathematical operations in Creact inside blocks that are labelled with '%' for easier understanding of the transpiler and maintaining the syntax of the language. 
+
+
+
 
