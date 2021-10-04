@@ -1,26 +1,13 @@
 <htpl>
     <main>
-        <in val,val1,res/>
-        <log>Enter the 2 values to get gcd \n</log>
-        <take val,val1/>
-        <? if(val>val1)
-            <fx res=gcd_algo(val1,val) />
-            <log>${res}</log>
-        ?>
-        <? elif(val<val1)
-            <fx res=gcd_algo(val,val1) />
-            <log>${res}\n</log>
-        ?>
-        <? else
-            <log>${val}\n</log>
-        ?>
+        <in x=4,y/>
+        <<$tream<in> fs >>
+        <<fs.plus[x]>>1
+        <<fs.plus[x+1]>>2
+        <<fs.plus[x+2]>>3
+        <<fs.plus[x+3]>>4
+        <<fs.plus[x+4]>>5
+        <%y =  fs[4] %>
+        <log>${y}\n</log>
     </main>
-    <fx in gcd_algo(in a,in b)>
-        <? if(a==0)
-            <throw b/> 
-        ?>
-        <? else
-            <throw gcd_algo(b%a,a)/> 
-        ?>
-    </gcd_algo>
 </htpl>
