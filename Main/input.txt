@@ -1,13 +1,6 @@
 <htpl>
     <main>
-        <in x=4,y/>
-        <<$tream<in> fs >>
-        <<fs.plus[x]>>1
-        <<fs.plus[x+1]>>2
-        <<fs.plus[x+2]>>3
-        <<fs.plus[x+3]>>4
-        <<fs.plus[x+4]>>5
-        <%y =  fs[4] %>
-        <log>${y}\n</log>
+        <in val,val1/>
+        <take val,val1/>
     </main>
 </htpl>

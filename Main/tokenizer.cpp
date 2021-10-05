@@ -10,12 +10,12 @@ std::unordered_map<std::string, std::string> varKey;
 std::unordered_map<std::string, std::string> variable_DataMapper;
 std::vector<std::string> function_Signatures;
 std::vector<std::string> vector_Container;
-std::vector<std::string> global_vars;
+std::vector<std::string> string_Container;
 void dataSet()
 {
     varKey.insert({"in", "int"});
     varKey.insert({"ch", "char"});
-    varKey.insert({"st", "char[]"});
+    varKey.insert({"str", "char*"});
     varKey.insert({"<htpl>", "#include<stdio.h>\n"});
     varKey.insert({"<main>", "int main()\n{"});
     varKey.insert({"take", "scanf()"});
@@ -24,14 +24,17 @@ void dataSet()
     varKey.insert({"/log", ";"});
     varKey.insert({"int", "%d"});
     varKey.insert({"char", "%c"});
-    varKey.insert({"string", "%s"});
+    varKey.insert({"char*", "%s"});
 }
 //Generates an output C-Lang file
 void ouputFileReader()
 {
     std::ofstream writeIn("output.c");
+    std::cout<<"=============================================="<<"\n";
+    
     for (int i = 0; i < codeSnippets.size(); i++)
     {
+        std::cout<<codeSnippets[i]<<"\n";
         {
             writeIn << codeSnippets[i] << "\n";
             if (i == 0)
@@ -40,7 +43,16 @@ void ouputFileReader()
                 {
                     for (int b = 0; b < vector_Container.size(); b++)
                     {
+                        //// std::cout<<vector_Container[b]<<"\n";
                         writeIn << (vector_Container[b]);
+                    }
+                }
+                if (string_Container.size() != 0)
+                {
+                    for (int b = 0; b < string_Container.size(); b++)
+                    {
+                        //// std::cout<<string_Container[b]<<"\n";
+                        writeIn << (string_Container[b]);
                     }
                 }
                 for (int j = 0; j < function_Signatures.size(); j++)
@@ -50,6 +62,7 @@ void ouputFileReader()
             }
         }
     }
+    std::cout<<"=============================================="<<"\n";
     writeIn.close();
 }
 std::string removeInnerspace(std::string params)
@@ -81,6 +94,8 @@ void printlnParserStream()
     int switch_btn = 0;
     for (int i = 0; i < codeSnippets.size(); i++)
     {
+        std::cout<<"--------------------------------------------------"<<"\n";
+        std::cout<<codeSnippets[i]<<"\n";
         if (codeSnippets[i] == "printf()" && (codeSnippets[i + 2][0] == ';'))
         {
             int pos;
@@ -91,26 +106,27 @@ void printlnParserStream()
                 {
                     pos = codeSnippets[i + 1].substr(j).find('}') + j;
                     std::string varname = codeSnippets[i + 1].substr(j + 2, pos - (j + 2));
+                    // std::cout<<variable_DataMapper.find(varname)->second<<"\n";
                     if (varname.find('[') != std::string::npos && varname.find(']') != std::string::npos)
                     {
                         std::string val = varname.substr(varname.find('[') + 1, varname.find(']') - varname.find('[') - 1);
                         varname = varname.substr(0, varname.find('['));
-                        //std::cout << val << " " << varname << "\n";
                         std::string xc = "search(&";
-                        // for (auto it : variable_DataMapper)
-                        // {
-                        //     std::cout << it.first << " " << it.second << "\n";
-                        // }
                         formatSpecifiers += varKey.find((varKey.find(variable_DataMapper.find(varname)->second))->second)->second;
                         varNames = varNames + (((varNames == "") ? "" : ",") + xc + varname + "," + val + ")");
-                        std::cout << formatSpecifiers << "\n";
-                        std::cout << varNames << "\n";
+                        // std::cout << formatSpecifiers << "\n";
+                        // std::cout << varNames << "\n";
                     }
                     else if (variable_DataMapper.find(varname) != variable_DataMapper.end())
                     {
-
-                        formatSpecifiers += varKey.find((varKey.find(variable_DataMapper.find(varname)->second))->second)->second;
-                        varNames += ((varNames == "") ? "" : ",") + varname;
+                        if(variable_DataMapper.find(varname)->second != "char*"){
+                            formatSpecifiers += varKey.find((varKey.find(variable_DataMapper.find(varname)->second))->second)->second;
+                            varNames += ((varNames == "") ? "" : ",") + varname;
+                        } else {
+                            //// std::cout<<((variable_DataMapper.find(varname)->second))<<"\n";
+                            formatSpecifiers += (varKey.find(variable_DataMapper.find(varname)->second))->second;
+                            varNames += ((varNames == "") ? "" : ",") + varname;
+                        }
                     }
                     else
                     {
@@ -150,6 +166,19 @@ void printlnParserStream()
             formatSpecifier = formatSpecifier.substr(0, formatSpecifier.length() - 1);
             codeSnippets[i] = codeSnippets[i].substr(0, 6) + '"' + formatSpecifier + '"' + "," + varNames + ')' + ';';
             codeSnippets.erase(codeSnippets.begin() + i + 1);
+        }
+    }
+    std::cout<<"--------------------------------------------------"<<"\n";
+}
+void stringsINIT()
+{
+    if (string_Container.empty())
+    {
+        std::ifstream readParts("stringInitializer.txt");
+        std::string parts;
+        while (getline(readParts, parts))
+        {
+            vector_Container.push_back(parts + "\n");
         }
     }
 }
@@ -213,7 +242,7 @@ void fileVectorBuilder(std::string res)
             }
             else
             {
-                //std::cout << res << '\n';
+                //// std::cout << res << '\n';
                 res = res.substr(0, res.find('>'));
                 for (int i = 0; i < res.length(); i++)
                 {
@@ -255,12 +284,9 @@ void fileVectorBuilder(std::string res)
                 stf += "{";
                 codeSnippets.push_back(stf);
             }
-            // std::cout << res << "\n";
         }
         else if (res.substr(1, 5) == "throw")
         {
-            // std::cout << res[7] << "\n";
-            // std::cout << "whoaaa" << "\n";
             std::string stf = "";
             std::string tmp = "";
             for (int i = 7; i < res.length(); i++)
@@ -289,8 +315,7 @@ void fileVectorBuilder(std::string res)
         }
         else if (res == "</htpl>")
         {
-            std::cout << " "
-                      << "\n";
+            std::cout << " " << "\n";
         }
         else if (res[1] == '/' && res.substr(2, 3) != "log")
         {
@@ -322,7 +347,7 @@ void fileVectorBuilder(std::string res)
             if (brackpos > eqpos)
             {
                 std::string val = res.substr(res.find('[') + 1, res.find(']') - res.find('[') - 1);
-                std::string var = res.substr(res.find('=')+1, res.find('[') - res.find('=')-1);
+                std::string var = res.substr(res.find('=') + 1, res.find('[') - res.find('=') - 1);
                 codeSnippets.push_back(removeInnerspace(res.substr(0, res.find('=') + 1)) + "search(&" + removeInnerspace(var) + "," + removeInnerspace(val) + ")" + ";");
             }
             else
@@ -335,8 +360,8 @@ void fileVectorBuilder(std::string res)
         }
         else if (res[res.length() - 1] == '>' && res[res.length() - 2] == '/')
         {
-
             res = res.substr(1, res.length() - 3) + " ";
+            // std::cout<<res<<"\n";
             std::vector<std::string> tmp;
             std::string stf = "";
             int x = 0;
@@ -354,9 +379,10 @@ void fileVectorBuilder(std::string res)
             {
                 std::string helper_string = "";
                 std::vector<int> comma_separators;
+                // std::cout<<res<<"\n";
                 for (int i = 0; i < res.length(); i++)
                 {
-                    if (res[i] == '=')
+                    if (res[i] == '=' || res[i]==',')
                     {
                         helper_string += ' ';
                         helper_string += res[i];
@@ -366,7 +392,7 @@ void fileVectorBuilder(std::string res)
                     {
                         helper_string += res[i];
                     }
-                    if (helper_string == "in" || helper_string == "ch")
+                    if (helper_string == "in" || helper_string == "ch" || helper_string == "str")
                     {
                         helper_string += ' ';
                     }
@@ -384,10 +410,15 @@ void fileVectorBuilder(std::string res)
                         stf = "";
                     }
                 }
+                //tmp[0] = removeInnerspace(tmp[0]);
+                for(auto it: tmp){
+                    std::cout<<it<<":";
+                }
                 if (tmp[0] == "in" || tmp[0] == "ch")
                 {
                     res = varKey.find(tmp[0])->second + res.substr(res.find(' '), res.length() - res.find(' ') - 1) + ';';
                     codeSnippets.push_back(res);
+                    // std::cout<<res<<"\n";
                     std::string help_string = "";
                     std::vector<std::string> ins_vector;
                     for (int i = 0; i < res.length(); i++)
@@ -416,8 +447,19 @@ void fileVectorBuilder(std::string res)
                         variable_DataMapper.insert({ins_vector[i], stf});
                     }
                 }
+                else if (tmp[0] == "str")
+                {
+                    res = varKey.find(tmp[0])->second + res.substr(res.find(' '), res.length() - res.find(' ') - 1) + ';';
+                    codeSnippets.push_back(res);
+                    for(int i=0;i<tmp.size();i++){
+                        if(tmp[i]=="="){
+                            variable_DataMapper.insert({tmp[i-1],"str"});
+                        }
+                    }
+                }
             }
             else if (x == 0)
+            
             { //for <in val/> and <take val/>
                 for (int i = 0; i < res.length(); i++)
                 {
@@ -431,6 +473,16 @@ void fileVectorBuilder(std::string res)
                         stf = "";
                     }
                 }
+                // for(auto it: tmp){
+                //     std::cout<<it<<"\n";
+                // }
+                variable_DataMapper.insert({tmp[1],varKey.find(tmp[0])->second});
+                // std::cout<<"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&77"<<"\n";
+                // for (auto it : variable_DataMapper)
+                // {
+                //     std::cout << it.first<<" "<<it.second << "\n";
+                // }
+                // std::cout<<"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&77"<<"\n";
                 if (tmp[0] == "in" || tmp[0] == "ch")
                 {
                     res = varKey.find(tmp[0])->second + res.substr(res.find(' '), res.length() - res.find(' ') - 1) + ';';
@@ -460,14 +512,30 @@ void fileVectorBuilder(std::string res)
                     }
                     for (int i = 1; i < ins_vector.size(); i++)
                     {
+                        //// std::cout<<ins_vector[i]<<" "<<stf<<"\n";
                         variable_DataMapper.insert({ins_vector[i], stf});
                     }
+                } else if(tmp[0]=="str"){
+                    res = varKey.find(tmp[0])->second + res.substr(res.find(' '), res.length() - res.find(' ') - 1) + ';';
+                    codeSnippets.push_back(res);
                 }
                 else if (tmp[0] == "take")
                 {
-                    res = varKey.find(tmp[0])->second;
-                    codeSnippets.push_back(res);
-                    codeSnippets.push_back(tmp[1]);
+                    // std::cout << variable_DataMapper.find(tmp[1])->second << "\n";
+                    if (variable_DataMapper.find(tmp[1])->second == "int" || variable_DataMapper.find(tmp[1])->second == "char")
+                    {
+                        res = varKey.find(tmp[0])->second;
+                        codeSnippets.push_back(res);
+                        codeSnippets.push_back(tmp[1]);
+                        for(auto it: codeSnippets){
+                            std::cout<<it<<"\n";
+                        }
+                    }
+                    else if (variable_DataMapper.find(tmp[1])->second == "char*")
+                    {
+                        stringsINIT();
+                        codeSnippets.push_back(tmp[1] + "=" + "stringINIT(" + tmp[1] + ");");
+                    }
                 }
             }
         }
@@ -597,14 +665,14 @@ void vectorBuilder(std::string res)
     if (res.find('$') != std::string::npos && res.substr(res.find('$'), 6) == "$tream" && vector_Container.empty())
     {
         std::string stGetType = res.substr(res.find('$') + 7, 2);
-        // std::cout<<stGetType<<"\n";
-        // std::cout << stGetType << " " << varKey.find(stGetType)->second << "\n";
+        // // std::cout<<stGetType<<"\n";
+        // // std::cout << stGetType << " " << varKey.find(stGetType)->second << "\n";
         variable_DataMapper.insert({removeInnerspace(res.substr(res.find('>') + 1, res.length() - (res.find('>') + 1))), stGetType});
         // for (auto it : variable_DataMapper)
         // {
-        //     std::cout << it.first << " " << it.second << "\n";
+        //     // std::cout << it.first << " " << it.second << "\n";
         // }
-        //std::cout << stGetType << " " << varKey.find(stGetType)->second << "\n";
+        //// std::cout << stGetType << " " << varKey.find(stGetType)->second << "\n";
         std::string sthelp = "struct Node *" + removeInnerspace(res.substr(res.find('>') + 1, res.length() - (res.find('>') + 1)));
         sthelp += "= NULL";
         codeSnippets.push_back(sthelp + ";");
