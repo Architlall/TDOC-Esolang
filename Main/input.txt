@@ -1,26 +1,13 @@
 <htpl>
     <main>
-        <in val,val1,res/>
-        <log>Enter the 2 values to get gcd \n</log>
-        <take val,val1/>
-        <? if(val>val1)
-            <fx res=gcd_algo(val1,val) />
-            <log>${res}</log>
-        ?>
-        <? elif(val<val1)
-            <fx res=gcd_algo(val,val1) />
-            <log>${res}\n</log>
-        ?>
-        <? else
-            <log>${val}\n</log>
-        ?>
+        <in x = 4/>
+        <<stream::(in) v>>
+        <<v.plus(x)>>
+        <<v.plus(x+1)>>
+        <<v.plus(x+2)>>
+        <<v.plus(x+3)>>
+        <<v.plus(x+4)>>
+        <% v[2] = 999 %>
+        <<v.show()>>
     </main>
-    <fx in gcd_algo(in a,in b)>
-        <? if(a==0)
-            <throw b/> 
-        ?>
-        <? else
-            <throw gcd_algo(b%a,a)/> 
-        ?>
-    </gcd_algo>
 </htpl>
