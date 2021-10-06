@@ -189,9 +189,9 @@ In this language es6 standards for formatting and printing the expression is use
 
 ### Syntax
 
-    ```js
-        <log> ${varName1} ${varName2} </log>
-    ```
+```js
+    <log> ${varName1} ${varName2} </log>
+```
 
 For example:-
 
