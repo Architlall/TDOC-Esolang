@@ -309,20 +309,22 @@ void fileVectorBuilder(std::string res)
         }
         else if (res[1] == '%' && res.find('[') != std::string::npos)
         {
+            int c1=0,c2=0;
             res = res.substr(2, res.length() - 4);
             res = fspaceRemover(res);
-            if (res.find('=') > res.find('['))
-            {
-                std::string var_name = res.substr(0, res.find('['));
-                std::string val = res.substr(res.find('[') + 1, res.find(']') - res.find('[') - 1);
-                codeSnippets.push_back("*(" + var_name + "+" + val + ")" + res.substr(res.find('='), res.length() - res.find('=')) + ";");
+            std::string p1 = fspaceRemover(res.substr(0,res.find('=')));
+            std::string p2 = fspaceRemover(res.substr(res.find('=')+1,res.length()-res.find('=')-1));
+            if(p1.find('[')!=std::string::npos && p1.find(']')!=std::string::npos){
+                std::string var_name = p1.substr(0, p1.find('['));
+                std::string val = p1.substr(p1.find('[') + 1, p1.find(']') - p1.find('[') - 1);
+                p1 = "*(" + var_name + "+" + val + ")" ;
             }
-            else
-            {
-                std::string var_name = fspaceRemover(res.substr(res.find('=') + 1, res.find('[') - (res.find('=') + 1)));
-                std::string val = res.substr(res.find('[') + 1, res.find(']') - res.find('[') - 1);
-                codeSnippets.push_back(res.substr(res.find('='), res.length() - res.find('=')) + "*(" + var_name + "+" + val + ")" + ";");
-            }
+            if(p2.find('[')!=std::string::npos && p2.find(']')!=std::string::npos){
+                std::string var_name2 = p2.substr(0, p2.find('['));
+                std::string val2 = p2.substr(p2.find('[') + 1, p2.find(']') - p2.find('[') - 1);
+                p2 = "*(" + var_name2 + "+" + val2 + ")";
+            } 
+            codeSnippets.push_back(p1+" = "+p2+";");
         }
         else if (res[res.length() - 1] == '>' && res[res.length() - 2] == '/')
         {
