@@ -13,7 +13,7 @@ std::unordered_map<std::string, std::string> variable_DataMapper;
 std::vector<std::string> function_Signatures;
 std::vector<std::string> headers;
 std::vector<std::string> var_keeper;
-std::unordered_map<std::string,std::string> vector_counter;
+std::unordered_map<std::string, std::string> vector_counter;
 
 void dataSet()
 {
@@ -52,14 +52,16 @@ void ouputFileReader()
                 writeIn << (var_keeper[j]) << "\n";
             }
         }
-
     }
     writeIn.close();
 }
-std::string fspaceRemover(std::string st){
-    for(int i=0;i<st.length();i++){
-        if(st[i]!=' '){
-            return st.substr(i,st.length()-i);
+std::string fspaceRemover(std::string st)
+{
+    for (int i = 0; i < st.length(); i++)
+    {
+        if (st[i] != ' ')
+        {
+            return st.substr(i, st.length() - i);
         }
     }
     return 0;
@@ -279,14 +281,15 @@ void fileVectorBuilder(std::string res)
         }
         else if (res == "</htpl>")
         {
-            std::cout << " " << "\n";
+            std::cout << " "
+                      << "\n";
         }
         else if (res[1] == '/' && res.substr(2, 3) != "log")
         {
             res = "/";
             codeSnippets.push_back(varKey.find(res)->second);
         }
-        else if (res[1] == '%' && res.find('[')==std::string::npos)
+        else if (res[1] == '%' && res.find('[') == std::string::npos)
         {
             std::vector<std::string> tmp;
             std::string stf = "";
@@ -304,18 +307,21 @@ void fileVectorBuilder(std::string res)
             stf = stf + ';';
             codeSnippets.push_back(stf);
         }
-        else if (res[1] == '%' && res.find('[')!=std::string::npos)
+        else if (res[1] == '%' && res.find('[') != std::string::npos)
         {
-            res = res.substr(2,res.length()-4);
+            res = res.substr(2, res.length() - 4);
             res = fspaceRemover(res);
-            if(res.find('=')>res.find('[')){
-                std::string var_name = res.substr(0,res.find('['));
-                std::string val = res.substr(res.find('[')+1,res.find(']')-res.find('[')-1);
-                codeSnippets.push_back("*("+var_name+"+"+val+")"+res.substr(res.find('='),res.length()-res.find('='))+";");
-            } else {
-                std::string var_name = fspaceRemover(res.substr(res.find('=')+1,res.find('[')-(res.find('=')+1)));
-                std::string val = res.substr(res.find('[')+1,res.find(']')-res.find('[')-1);
-                codeSnippets.push_back(res.substr(res.find('='),res.length()-res.find('='))+"*("+var_name+"+"+val+")"+";");
+            if (res.find('=') > res.find('['))
+            {
+                std::string var_name = res.substr(0, res.find('['));
+                std::string val = res.substr(res.find('[') + 1, res.find(']') - res.find('[') - 1);
+                codeSnippets.push_back("*(" + var_name + "+" + val + ")" + res.substr(res.find('='), res.length() - res.find('=')) + ";");
+            }
+            else
+            {
+                std::string var_name = fspaceRemover(res.substr(res.find('=') + 1, res.find('[') - (res.find('=') + 1)));
+                std::string val = res.substr(res.find('[') + 1, res.find(']') - res.find('[') - 1);
+                codeSnippets.push_back(res.substr(res.find('='), res.length() - res.find('=')) + "*(" + var_name + "+" + val + ")" + ";");
             }
         }
         else if (res[res.length() - 1] == '>' && res[res.length() - 2] == '/')
@@ -576,44 +582,56 @@ void loopBuilders(std::string parse)
         codeSnippets.push_back(stf);
     }
 }
-void memoryPlay(std::string res){
-    res = res.substr(2,res.length()-4);
+void memoryPlay(std::string res)
+{
+    res = res.substr(2, res.length() - 4);
     // std::cout<<res<<"\n";
     res = fspaceRemover(res);
-    if(res.substr(0,6)=="stream"){
+    if (res.substr(0, 6) == "stream")
+    {
         headers.push_back("#include<stdlib.h>");
         headers.push_back("#define predefsz 2");
-        std::string _datatype = res.substr(res.find('(')+1,res.find(')')-res.find('(')-1);
+        std::string _datatype = res.substr(res.find('(') + 1, res.find(')') - res.find('(') - 1);
         // std::cout<<_datatype<<"\n";
-        if(_datatype=="in"){
+        if (_datatype == "in")
+        {
             srand(time(0));
-            std::string varRect = fspaceRemover(res.substr(res.find(')')+1,res.length()-res.find(')')-1));
-            std::string sizeDef = varRect+ std::to_string(rand()).substr(0,3);
-            std::string ins_var = "c"+std::to_string(rand()).substr(0,3);
-            vector_counter.insert({varRect,ins_var});
-            vector_counter.insert({ins_var,sizeDef});
-            function_Signatures.push_back("int "+ins_var+"= 0");
-            codeSnippets.push_back("int "+sizeDef+" = "+"predefsz;");
-            std::string instance1 = varKey.find(_datatype)->second+" "+'*'+varRect+" = (int*)malloc(sizeof(int)*"+sizeDef+");";
+            std::string varRect = fspaceRemover(res.substr(res.find(')') + 1, res.length() - res.find(')') - 1));
+            std::string sizeDef = varRect + std::to_string(rand()).substr(0, 3);
+            std::string ins_var = "c" + std::to_string(rand()).substr(0, 3);
+            vector_counter.insert({varRect, ins_var});
+            vector_counter.insert({ins_var, sizeDef});
+            function_Signatures.push_back("int " + ins_var + "= 0");
+            codeSnippets.push_back("int " + sizeDef + " = " + "predefsz;");
+            std::string instance1 = varKey.find(_datatype)->second + " " + '*' + varRect + " = (int*)malloc(sizeof(int)*" + sizeDef + ");";
             codeSnippets.push_back(instance1);
-            if(var_keeper.empty()){
+            if (var_keeper.empty())
+            {
                 std::string ins_var1;
                 std::ifstream readFile("helper.txt");
-                while(getline(readFile,ins_var1)){
+                while (getline(readFile, ins_var1))
+                {
                     var_keeper.push_back(ins_var1);
                 }
             }
-        } 
-    } else {
-        if(res.substr(res.find('.')+1,4)=="plus"){
+        }
+    }
+    else
+    {
+        if (res.substr(res.find('.') + 1, 4) == "plus")
+        {
 
-            std::string ins_var = res.substr(0,res.find('.')) + "=" + "checkout(" + vector_counter.find(res.substr(0,res.find('.')))->second +","+ vector_counter.find(vector_counter.find(res.substr(0,res.find('.')))->second)->second + "," + res.substr(0,res.find('.'))+");\n";
-            std::string ins_var3 = "*("+res.substr(0,res.find('.'))+"+"+vector_counter.find(res.substr(0,res.find('.')))->second+"++)="+res.substr(res.find('(')+1,res.find(')')-res.find('(')-1)+";";  
-            codeSnippets.push_back(ins_var+ins_var3);      
-        } else if(res.substr(res.find('.')+1,5)=="minus"){
-            codeSnippets.push_back(vector_counter.find(res.substr(0,res.find('.')))->second+"--"+';');
-        } else if(res.substr(res.find('.')+1,4)=="show"){
-            codeSnippets.push_back("show("+res.substr(0,res.find('.'))+","+vector_counter.find(res.substr(0,res.find('.')))->second+");");
+            std::string ins_var = res.substr(0, res.find('.')) + "=" + "checkout(" + vector_counter.find(res.substr(0, res.find('.')))->second + "," + vector_counter.find(vector_counter.find(res.substr(0, res.find('.')))->second)->second + "," + res.substr(0, res.find('.')) + ");\n";
+            std::string ins_var3 = "*(" + res.substr(0, res.find('.')) + "+" + vector_counter.find(res.substr(0, res.find('.')))->second + "++)=" + res.substr(res.find('(') + 1, res.find(')') - res.find('(') - 1) + ";";
+            codeSnippets.push_back(ins_var + ins_var3);
+        }
+        else if (res.substr(res.find('.') + 1, 5) == "minus")
+        {
+            codeSnippets.push_back(vector_counter.find(res.substr(0, res.find('.')))->second + "--" + ';');
+        }
+        else if (res.substr(res.find('.') + 1, 4) == "show")
+        {
+            codeSnippets.push_back("show(" + res.substr(0, res.find('.')) + "," + vector_counter.find(res.substr(0, res.find('.')))->second + ");");
         }
     }
 }
@@ -639,7 +657,8 @@ int main(int argc, char const *argv[])
         {
             loopBuilders(res);
         }
-        else if(res.substr(0,2)=="<<"){
+        else if (res.substr(0, 2) == "<<")
+        {
             memoryPlay(res);
         }
         else
