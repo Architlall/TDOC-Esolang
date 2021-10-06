@@ -1,87 +1,13 @@
-#include <stdlib.h>
-struct Node
-{
-    int data;
-    struct Node *next;
-};
-void showoff(struct Node **head)
-{
-    while ((*head)->next != NULL)
-    {
-        printf("%d ", (*head)->data);
-        (*head) = (*head)->next;
+int* checkout(int counter,int pre, int* ptr){
+    if(counter==pre){
+        ptr = (int*)realloc(ptr,sizeof(int)*pre*2);
+        pre = pre*2;
     }
-    printf("%d ", (*head)->data);
-    printf("\n");
+    return ptr;
 }
-long long int size(struct Node **head)
-{
-    long long int cnt=0;
-    while ((*head)->next != NULL)
-    {
-        cnt++;
-        (*head) = (*head)->next;
+void show(int *ptr,int counter){
+    for(int i=0;i<counter;i++){
+        printf("%d\t",*(ptr+i));
+        printf("\n");
     }
-    return cnt;
-}
-void plus(struct Node **head, int val)
-{
-    struct Node *ptr = (struct Node *)malloc(sizeof(struct Node));
-    ptr->data = val;
-    if ((*head) == NULL)
-    {
-        (*head) = ptr;
-    }
-    else
-    {
-        struct Node *temp = *head;
-        while (temp->next != NULL)
-        {
-            temp = temp->next;
-        }
-        temp->next = ptr;
-        ptr->next = NULL;
-    }
-}
-void minus(struct Node **head){
-    struct Node *ptr = *head;
-    while(ptr->next->next!=NULL){
-        ptr=ptr->next;
-    }
-    ptr->next = NULL;
-}
-void update(struct Node **head, int pos,int val)
-{
-    if(pos==0){
-        (*head)->data = val;
-    } else {
-        struct Node *temp_ptr = *head;
-        int post = 0;
-        while (temp_ptr != NULL)
-        {
-            temp_ptr = temp_ptr->next;
-            post++;
-            if(post==pos){
-                temp_ptr->data = val;
-                break;
-            }
-        }
-    }
-}
-int search(struct Node **head, int pos)
-{
-    if(pos==0){
-        return (*head)->data;
-    } 
-    struct Node *temp_ptr = *head;
-    int post = 0;
-    while (temp_ptr != NULL)
-    {
-        temp_ptr = temp_ptr->next;
-        post++;
-        if(post==pos){
-            return temp_ptr->data;
-        }
-    }
-    return 0;
 }
