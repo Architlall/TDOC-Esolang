@@ -6,7 +6,7 @@ Well we took it seriously, so let's make something that could extend HTML beyond
 
 CReact is a brand new crazy language that does all, plus its open-source add more layers to it make it more powerful :)
 
-So we would be building a new esoteric (basically means crazy af) language that gets interpreted to C language and gets compiled to give any result you want: conditionals, loops, characters, arithmetic, functions, recursion...
+So we would be building a new esoteric (basically means crazy) language that gets interpreted to C language and gets compiled to give any result you want: conditionals, loops, characters, arithmetic, functions, recursion...
 
 ## Prerequisites :
 
@@ -18,17 +18,18 @@ So here we shall go step by step and understand how to transpile our code in any
 
 ## Step 0 : Basics
 
-### An overview to STL and its concepts : 
+### An overview of STL and its concepts :
 
 The Standard Template Library (STL) is a set of C++ template classes to provide common programming data structures and functions such as lists, stacks, arrays, etc. It is a library of container classes, algorithms, and iterators. It is a generalized library and so, its components are parameterized.
 
 Containers or container classes store objects and data.
 Each container contains some inbuilt functions that help in operating on the containers and manipulating
-them to store as well modify data in it. These containers work as parameterized template classes, which are called from the library appropriately when required, lets look at 2 main examples of containers which are being used in our project :
+them to store as well modify data in it. These containers work as parameterized template classes, which are called from the library appropriately when required, lets look at 2 main examples of containers that are being used in our project :
 
-1. Vectors : Vectors are same as dynamic arrays with the ability to resize itself automatically when an element is inserted or deleted, with their storage being handled automatically by the container. Vector elements are placed in contiguous storage so that they can be accessed and traversed using iterators. In vectors, data is inserted at the end. Inserting at the end takes differential time, as sometimes there may be a need of extending the array. Removing the last element takes only constant time because no resizing happens.
+1. Vectors: Vectors are the same as dynamic arrays with the ability to resize themselves automatically when an element is inserted or deleted, with their storage being handled automatically by the container. Vector elements are placed in contiguous storage so that they can be accessed and traversed using iterators. In vectors, data is inserted at the end. Inserting at the end takes differential time, as sometimes there may be a need of extending the array. Removing the last element takes only constant time because no resizing happens.
 
-For example : 
+For example :
+
 ```cpp
 
     vector<_datatype> _variablename;
@@ -39,10 +40,10 @@ For example :
     - v.size();
 
 ```
-For more details check out this link : https://www.cplusplus.com/reference/vector/vector/
 
+For more details check out this link: https://www.cplusplus.com/reference/vector/vector/
 
-2. Unordered-Maps : unordered_map is an associated container that stores elements formed by the combination of key-value and a mapped value. The key value is used to uniquely identify the element and the mapped value is the content associated with the key. Both key and value can be of any type predefined or user-defined. 
+2. Unordered-Maps: unordered_map is an associated container that stores elements formed by the combination of key-value and a mapped value. The key value is used to uniquely identify the element and the mapped value is the content associated with the key. Both key and value can be of any type predefined or user-defined.
 
 ```cpp
 
@@ -50,10 +51,10 @@ For more details check out this link : https://www.cplusplus.com/reference/vecto
     Some basic methods for an unordered_map mp include :
     - mp.insert({val1,val2});
     - mp.find(val1)->first = val1
-    - mp.find(val1)->second = val2 
+    - mp.find(val1)->second = val2
 ```
 
-For more details check out this link : https://www.cplusplus.com/reference/unordered_map/unordered_map/
+For more details check out this link: https://www.cplusplus.com/reference/unordered_map/unordered_map/
 
 ### An inbuilt Database :
 
@@ -74,13 +75,13 @@ In Read-only operations it can read each line of string which is written in anot
 In write operations, we can work out by rendering or parsing the text lines by manipulating the string statements and writing them in a file.
 
 In C++, we have the file operations contained in the header called `#include<fstream>`
-which can be included to do the followinf operations :
+which can be included to do the following operations :
 
     -ifstream = Reading from a file.
     -ofstream = Writing to a file.
     -fstream = to do both the operations.
 
-Basic Syntax : 
+Basic Syntax :
 
 ```cpp
     - Reading:
@@ -94,7 +95,8 @@ Basic Syntax :
     writeIn << /* statement */ <<"\n"
 
 ```
-For more details on file handling in Cpp checkout : https://www.cplusplus.com/doc/tutorial/files/
+
+For more details on file handling in Cpp checkout: https://www.cplusplus.com/doc/tutorial/files/
 
 In the project, as we shall be writing the code on a .txt file so your transpiler script shall read the esolang-code from the file line by line and parse each line as a collection of characters, so here we shall take each line as an input from the base .txt file and parse it accordingly and store it in a container which shall allow us to make changes in the placement of values whenever writing in the result file at last (this seems unnecessary and rather it is more practical to just inject code inside the output file directly but there's a catch to do so which we'll get through later..)
 
@@ -129,7 +131,7 @@ For this, we can implement a basic loop function that reads the string, and as a
 
 Now working with tags:
 
-Here the 1st thing which is the `<htpl>` tag basically is a constant keyword identifier, as it will be always written to start coding in your esolang...
+Here the 1st thing which is the `<htpl>` tag is a constant keyword identifier, as it will be always written to start coding in your esolang...
 
 So for that instance, we can store the appropriate code for this specific tag in our globally defined tuple collection, and on recognizing this specific tag can push the appropriate code inside our result container which will be pushed in the parsed file later.
 
@@ -160,7 +162,7 @@ The printf implementation :
 
 ```py
 
-    [	{ 	“print()“	}  ,  {	“Material to be inserted i.e connected parts of a multiline <log> ”	}  ,  {	  “;”	 }];
+    [   {   “print()“   }  ,  { “Material to be inserted i.e connected parts of a multiline <log> ” }  ,  {   “;”    }];
 
 ```
 
@@ -170,7 +172,41 @@ and then re-inserted at the head node whereas removing the already present nodes
 
 This way we can create a simple printing program in our language.
 
-## Step 2 : Working with Data Types and Input/Output
+### Automating compilation using makefile and bash scripting
+
+#### Makefile
+
+        Make is a Unix utility that is designed to start the execution of a makefile. A makefile is a special file, containing shell commands, that you create and name makefile (or Makefile depending upon the system). While in the directory containing this makefile, you will typically make and the commands in the makefile will be executed
+
+        Make keeps track of the last time files (normally object files) were updated and only updates those files which are required (ones containing changes) to keep the source file up-to-date.
+
+        With this, you don't have to compile the code repeatedly, a simple make command in the terminal will compile the changed code
+
+#### Bash scripting
+
+    A bash script file is a file containing several bash commands, all of which gets executed once the bash script file is run on the system
+    In this project contents of the bash script file include
+        1. Changing working directory to Main
+        2. make command
+        3. Running transpiler binary with the file name
+        4. Compiling transpiled program using g++
+        5. Executing transpiled binary
+        6. Removing transpiled c file and binary
+    Bash script files can be run using the command ./script.sh
+
+Note: you might need to allow execution of the bash script in your system by using:` chmod +x script.sh` or ` chmod 777 script.sh`
+
+#### Executing the program
+
+    You need to place a .txt file in the Main folder with contents of CReact code to be executed
+    then change directory to root of the project (if you are not already there) then execute the commands
+
+```
+chmod +x script.sh
+./script.sh input.txt # assuming name of the file is input.txt
+```
+
+## Step 2: Working with Data Types and Input/Output
 
 Taking user input is a very basic task that is expected of our esolang. For convenience let us assume that we have already declared a variable of integer type (we will see how to do that later in this section).
 
@@ -198,7 +234,7 @@ Now, very similar to the fashion in which we implemented the print function abov
 Say a list has the contents for the print statement parsed as :
 
 ```js
- [	{ 	“scanf()“	}  ,  {	“variable_name”	}  ,  {	  “;”	 }];
+ [  {   “scanf()“   }  ,  { “variable_name” }  ,  {   “;”    }];
 ```
 
 So it can be parsed as ==========> [ { “ scanf(“variable_name---------”); “ } ]
@@ -241,7 +277,7 @@ respective identifier and reconfigure the string in the same order as :
 
 ```
 
-As this specific practice is followed in C language and this whole string is inserted into the temp_container to write afterwards in the file...
+As this specific practice is followed in C language and this whole string is inserted into the temp_container to write afterward in the file...
 
 ### Printing Multi Variables
 
@@ -259,12 +295,12 @@ In this language es6 standards for formatting and printing the expression is use
 For example:-
 
 ```js
-	<htpl>
-	    <in a=3,b=4 />
-	    <log>
-		Printing value of a and b : ${a} ${b}
-	    </log>
-	</htpl>
+    <htpl>
+        <in a=3,b=4 />
+        <log>
+        Printing value of a and b : ${a} ${b}
+        </log>
+    </htpl>
 
 ```
 
@@ -273,16 +309,16 @@ In the log function, the string between the htpl log tags are parsed into an equ
 ### Pseodocode:
 
     Function(string param)
-        Let str be an empty string to hold result
+        Let str be an empty string to hold the result
         Iterate 1 letter at a time over the string
         if (given letter word is equal to '$' and next letter is '{')
-    	search for variables declared before with the name between the braces
-    	if search was successful
-    	    add appropriate modifier to str
-    	else
-    	    add string including the braces as it is to str
+        search for variables declared before with the name between the braces
+        if a search was successful
+            add an appropriate modifier to str
         else
-    	add string as it is to str
+            add string including the braces as it is to str
+        else
+        add a string as it is to str
     Return str
 
 The code in the above example converts into a format string
@@ -291,7 +327,7 @@ for eg in C
 while in python it would look like:
 f'Printing value of a and b : {a} {b}'
 
-This formatted string along with with their variable names are passed onto their respective print statements hence facilitating multi-variable output
+This formatted string along with their variable names are passed onto their respective print statements hence facilitating multi-variable output
 
 ## Step 3: Conditional Statements
 
@@ -338,7 +374,7 @@ Take it as a fragment that renders an if-else construct to work with, here we sh
 
 ```
 
-Now to add to more functionality we shall implement nested conditions in the if-else block and differentiate it from the outside marker we shall implement a unique identifier logic that works with the help of indentation , like in the CReact we have made nest if-else block logic work by the help of adding indentation based on the no. of '?' one adds to identify where is the block lying for instance
+Now to add to more functionality we shall implement nested conditions in the if-else block and differentiate it from the outside marker we shall implement a unique identifier logic that works with the help of indentation, like in the CReact we have made nest if-else block logic work by the help of adding indentation based on the no. of '?' one adds to identify where is the block lying for instance
 
 ### Example helper
 
@@ -387,7 +423,7 @@ In general, the syntax of common loops in modern-day programming languages are
 ```
 Pseudocode :
 
-    FOR(DECLARATION; CONDITION;ITERATION)                  WHILE(CONDITION)
+    FOR(DECLARATION; CONDITION; ITERATION)                  WHILE(CONDITION)
         Execute Statement                                       Execute Statement
 
 ```
@@ -404,7 +440,7 @@ FOR CLAUSE :                                                WHILE CLAUSE:
                 #>                                                  #>
 ```
 
-Loops have a characteristic tag of '#' and the two loops are differentiated with respect to the letter that shows at the start of
+Loops have a characteristic tag of '#' and the two loops are differentiated concerning the letter that shows at the start of
 the loop syntax, which is 'f' referring to for loop while 'w' for while loop, the traspiling program looks specifically for the '#'
 symbol to execute a function to parse loops. The function first strips off spaces from the statements and first determines which
 category of the loop the statements belong to (i.e. for or while). The statements are then compiled into the compiling programming language
@@ -440,7 +476,7 @@ This process of transpiling is not very different from what is used in condition
 
 ## Step 6: Functions
 
-Now implementing functions requires two components of the process that must be implemented in our esolang. One being the statement where the function is define, and the other being the statement where the function is called in our main function. ( Please note that Creact does not have a single main function wherein all the code resides, but may have multiple functions outside the main function as well just like C/C++).
+Now implementing functions requires two components of the process that must be implemented in our esolang. One is the statement where the function is defined, and the other being the statement where the function is called in our main function. ( Please note that Creact does not have a single main function wherein all the code resides, but may have multiple functions outside the main function as well just like C/C++).
 
 An example of function definition syntax in Creact -
 
@@ -456,7 +492,7 @@ An example of function definition syntax in Creact -
 
 ```
 
-As you can see from the above snippet, the functions are define using 'fx', which is followed by the return type of the function. The function name takes the parameters of the function, and then we write the function body. 'throw' is the keyword to return a value. (similar to the keyword return in C/C++)
+As you can see from the above snippet, the functions are defined using 'fx', which is followed by the return type of the function. The function name takes the parameters of the function, and then we write the function body. 'throw' is the keyword to return a value. (similar to the keyword return in C/C++)
 
 An example of function call syntax in the main function in Creact -
 
@@ -464,11 +500,11 @@ An example of function call syntax in the main function in Creact -
     <fx res=gcd_algo(val1,val) />
 ```
 
-Here, our transpiler understands that a function is being called from 'fx'. We have defined an integer 'res' previously, which will store the returned value from the function 'gcd_algo'. ''val1' and 'val' are the parameters beinf sent to the function.
+Here, our transpiler understands that a function is being called from 'fx'. We have defined an integer 'res' previously, which will store the returned value from the function 'gcd_algo'. ''val1' and 'val' are the parameters being sent to the function.
 
 We check for the 'fx' term in the statement to check if it is a functional block.
 
-Now, before we start parsing, we need to check if our statement is the definition of the function, or the function call in the main function.
+Now, before we start parsing, we need to check if our statement is the definition of the function or the function call in the main function.
 If the statement is a function call, we need to parse it in the following way :
 
 ```
@@ -477,10 +513,10 @@ If the statement is a function call, we need to parse it in the following way :
 
 At this point, this is comparatively one of the simpler parsings that we do, using a temporary string vector. We also need to make sure that if any variables are defined in the statement, we find their respective values from the 'varKey' database that we have predefined.
 
-If the statement is a function definition instead, we parse the return type from 'varKey', and then parse the parameters as done previously.
+If the statement is a function definition instead, we parse the return type from 'varKey' and then parse the parameters as done previously.
 The body of the function shall be parsed as it is, as our previously defined functions such as arithmetic take care of everything. We do this parsing until we reach the end of the function.
 
-As we are converting our esolang file to a C file , and by syntax of C we already know that a function defined anywhere in the program should be defined with a function signature at the beginning of the program as shown in an example snippet below :
+As we are converting our esolang file to a C file, and by the syntax of C we already know that a function defined anywhere in the program should be defined with a function signature at the beginning of the program as shown in an example snippet below :
 
 ```c
 int func(param); // This is a function signature so for each function defined a signature needs to be added while parsing
@@ -493,7 +529,7 @@ int func(param){
 
 ```
 
-To execute this task we have to first start extracting the instance of function from the line it is written first in the htpl, say anywhere before the `<main></main>` or even after it , while reading through it , we shall store all such functions in a vector set of strings during moment that function statement is parsed as the syntax for functions signature is same as that of function call,
+To execute this task we have to first start extracting the instance of function from the line it is written first in the htpl, say anywhere before the `<main></main>` or even after it, while reading through it, we shall store all such functions in a vector set of strings during the moment that function statement is parsed as the syntax for functions signature is same as that of a function call,
 
 ### Helper snippet :
 
@@ -518,7 +554,7 @@ To understand how to implement it, let's focus on memory a bit :
 
 In arrays, we always statically ask for some contiguous block of memory from the heap, which once given cant be extended furthermore this restricts it to work furthermore with a humongous amount of data.
 
-So for this, we have to delve deep into the domain of memory management, and one of the chief reasons we're working on this project in C/C++ is because memory management is offered best in class by C/C++ due to the age-old concept of pointers.
+So for this, we have to delve deep into the domain of memory management, and one of the chief reasons we're working on this project in C/C++ is because memory management is offered best by C/C++ due to the age-old concept of pointers.
 In C we have 2 very interesting functions in stdlib.h library which include the malloc & realloc see their definition bellow :
 
 1. malloc() :- The “malloc” or “memory allocation” method in C is used to dynamically allocate a single large block of memory with the specified size. It returns a pointer of type void which can be cast into a pointer of any form.
@@ -549,7 +585,7 @@ Now in our CReact how shall we implement this, for dynamic arrays we are using a
 
 Syntax `<<stream::(_datatype) _varname>>`
 
-This initializes a pointer variable as shown as well as allocates the constant 2 blocks memory as well as can be programmed to trigger insertion of important headers in the program like `stdlib.h` or any preprocessor derivatives.
+This initializes a pointer variable as shown as well as allocates the constant 2 blocks memory as well as can be programmed to trigger the insertion of important headers in the program like `stdlib.h` or any preprocessor derivatives.
 
 Now, this is not the only thing that shall complete the allocation completely as we have to put in more layers to the code,
 
@@ -596,33 +632,3 @@ Assigning Operations :
 Now to parse it correctly we can look for the position of '=', divide the strings into 2 halves then on each half tokenize the parts like a variable name, value and place it accordingly.
 
 So that's how we can work with dynamic arrays in CReact.
-
-## Step 8 : Automating compilation using makefile and bash scripting
-
-### Makefile
-        Make is Unix utility that is designed to start execution of a makefile. A makefile is a special file, containing shell commands, that you create and name makefile (or Makefile depending upon the system). While in the directory containing this makefile, you will type make and the commands in the makefile will be executed
-
-        Make keeps track of the last time files (normally object files) were updated and only updates those files which are required (ones containing changes) to keep the sourcefile up-to-date.
-
-        With this you don't have to compile the code repeatedly, a simple make command in the terminal will compile the changed code
-
-### Bash scripting
-    A bash script file is a file containing a number of bash commands, all of which gets executed once the the bash script file is run on the system
-    In this project contents of the bash script file include
-        1. Changing working directory to Main
-        2. make command
-        3. Running transpiler binary with file name
-        4. Compiling transpiled program using g++
-        5. Executing transpiled pinary
-        6. Removing transpiled c file and binary
-    Bash script files can be run using the command ./script.sh
-Note: you might need to allow execution of the bash script in your system by using:`  chmod +x script.sh` or `  chmod 777 script.sh`
-
-### Executing the program
-    You need to place a .txt file in Main folder with contents of CReact code to be executed
-    then change directory to root of the project (if you are not already there) then execute the commands
-
-```
-chmod +x script.sh
-./script.sh input.txt # assuming name of the file is input.txt
-```
