@@ -537,7 +537,7 @@ Now to parse it correctly we can look for the position of '=', divide the string
 
 So that's how we can work with dynamic arrays in CReact.
 
-# Automating compilation using makefile and bash scripting
+## Step 8 : Automating compilation using makefile and bash scripting
 
 ### Makefile
         Make is Unix utility that is designed to start execution of a makefile. A makefile is a special file, containing shell commands, that you create and name makefile (or Makefile depending upon the system). While in the directory containing this makefile, you will type make and the commands in the makefile will be executed
