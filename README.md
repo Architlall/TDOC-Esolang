@@ -536,3 +536,33 @@ Assigning Operations :
 Now to parse it correctly we can look for the position of '=', divide the strings into 2 halves then on each half tokenize the parts like a variable name, value and place it accordingly.
 
 So that's how we can work with dynamic arrays in CReact.
+
+# Automating compilation using makefile and bash scripting
+
+### Makefile
+        Make is Unix utility that is designed to start execution of a makefile. A makefile is a special file, containing shell commands, that you create and name makefile (or Makefile depending upon the system). While in the directory containing this makefile, you will type make and the commands in the makefile will be executed
+
+        Make keeps track of the last time files (normally object files) were updated and only updates those files which are required (ones containing changes) to keep the sourcefile up-to-date.
+
+        With this you don't have to compile the code repeatedly, a simple make command in the terminal will compile the changed code
+
+### Bash scripting
+    A bash script file is a file containing a number of bash commands, all of which gets executed once the the bash script file is run on the system
+    In this project contents of the bash script file include
+        1. Changing working directory to Main
+        2. make command
+        3. Running transpiler binary with file name
+        4. Compiling transpiled program using g++
+        5. Executing transpiled pinary
+        6. Removing transpiled c file and binary
+    Bash script files can be run using the command ./script.sh
+Note: you might need to allow execution of the bash script in your system by using:`  chmod +x script.sh` or `  chmod 777 script.sh`
+
+### Executing the program
+    You need to place a .txt file in Main folder with contents of CReact code to be executed
+    then change directory to root of the project (if you are not already there) then execute the commands
+
+```
+chmod +x script.sh
+./script.sh input.txt # assuming name of the file is input.txt
+```
