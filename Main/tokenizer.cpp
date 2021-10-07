@@ -176,6 +176,7 @@ void fileVectorBuilder(std::string res)
                 }
                 res = ' ' + string_builder;
                 string_builder = "";
+                // std::cout<<res<<"\n";
                 for (int i = 0; i < res.length(); i++)
                 {
                     if (res[i] != ' ')
@@ -201,6 +202,7 @@ void fileVectorBuilder(std::string res)
                 }
                 stf += ";";
                 codeSnippets.push_back(stf);
+                // std::cout<<stf<<"\n";
             }
             else
             {
@@ -245,6 +247,7 @@ void fileVectorBuilder(std::string res)
                 function_Signatures.push_back(stf);
                 stf += "{";
                 codeSnippets.push_back(stf);
+                // std::cout<<stf<<"\n";
             }
             // std::cout << res << "\n";
         }
@@ -624,7 +627,7 @@ void memoryPlay(std::string res)
         if (res.substr(res.find('.') + 1, 4) == "plus")
         {
 
-            std::string ins_var = res.substr(0, res.find('.')) + "=" + "checkout(" + vector_counter.find(res.substr(0, res.find('.')))->second + "," + vector_counter.find(vector_counter.find(res.substr(0, res.find('.')))->second)->second + "," + res.substr(0, res.find('.')) + ");\n";
+            std::string ins_var = res.substr(0, res.find('.')) + "=" + "checkout(" + vector_counter.find(res.substr(0, res.find('.')))->second + ",&" + vector_counter.find(vector_counter.find(res.substr(0, res.find('.')))->second)->second + "," + res.substr(0, res.find('.')) + ");\n";
             std::string ins_var3 = "*(" + res.substr(0, res.find('.')) + "+" + vector_counter.find(res.substr(0, res.find('.')))->second + "++)=" + res.substr(res.find('(') + 1, res.find(')') - res.find('(') - 1) + ";";
             codeSnippets.push_back(ins_var + ins_var3);
         }
@@ -638,12 +641,10 @@ void memoryPlay(std::string res)
         }
     }
 }
-// int main()
 int main(int argc, char const *argv[])
 {
     std::string res;
     std::ifstream readData(argv[1]);
-    // std::ifstream readData("BinarySearch.html");
     int switch_btn = 0;
     while (getline(readData, res))
     {

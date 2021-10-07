@@ -1,0 +1,32 @@
+<htpl>
+    <main>
+        <in num/>
+        <take num/>
+        <fx printDiamond(num)/>
+    </main>
+    <fx void printDiamond(in n)>
+        <in sp,i,j/>
+        <% sp=n-1 %>
+        <# f(i=0,i<n,i++)
+            <## f(j=0,j<sp,j++)
+                <log> </log>
+            ##>
+            <## f(j=0,j<=i,j++)
+                <log>* </log>
+            ##>
+            <log>\n</log>
+            <% sp-- %>
+        #>
+        <% sp=0 %>
+        <# f(i=n-1,i>0,i--)
+            <## f(j=0,j<sp+1,j++)
+                <log> </log>
+            ##>
+            <## f(j=0,j<i,j++)
+                <log>* </log>
+            ##>
+            <log>\n</log>
+            <% sp++ %>
+        #>
+    </printDiamond>
+</htpl>
