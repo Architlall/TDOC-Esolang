@@ -1,0 +1,35 @@
+<htpl>
+    <main>
+        <<stream::(in) arr>>
+        <in x,y,i/>
+        <take x/>
+        <log>Enter the elements in the array \n</log>
+        <# f(i=0,i<x,i++)
+            <take y/>
+            <<arr.plus(y)>>
+        #>
+        <log>The array is : \n</log>
+        <<arr.show()>>
+        <in item,l,h,a/>
+        <% l = 0 %>
+        <% h = x - 1 %> 
+        <log>Enter the item to find \n</log>
+        <take item/>
+        <in m=(l+h)/2 />
+        <# w( l < h )
+            <% a = arr[m] %>
+            <? if(a==item)
+                <% m++ %>
+                <log>Value found at ${m}\n</log>
+                break;
+            ?>
+            <? elif(a<item)
+                <% l=m+1 %>
+            ?>
+            <? else
+                <% h=m-1 %>
+            ?>
+            <% m=(l+h)/2 %>
+        #>
+    </main>
+</htpl>

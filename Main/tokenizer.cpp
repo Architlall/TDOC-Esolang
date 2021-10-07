@@ -14,7 +14,6 @@ std::vector<std::string> function_Signatures;
 std::vector<std::string> headers;
 std::vector<std::string> var_keeper;
 std::unordered_map<std::string, std::string> vector_counter;
-
 void dataSet()
 {
     varKey.insert({"in", "int"});
@@ -644,7 +643,7 @@ int main(int argc, char const *argv[])
 {
     std::string res;
     std::ifstream readData(argv[1]);
-    // std::ifstream readData("input.txt");
+    // std::ifstream readData("BinarySearch.html");
     int switch_btn = 0;
     while (getline(readData, res))
     {
