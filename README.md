@@ -190,7 +190,10 @@ In this language es6 standards for formatting and printing the expression is use
 ### Syntax
 
 ```js
-    <log> ${varName1} ${varName2} </log>
+<log>
+  {" "}
+  ${varName1} ${varName2}{" "}
+</log>
 ```
 
 For example:-
@@ -363,7 +366,7 @@ the beginning and conclusion of the statements in CReact are determined by the "
 Nested loops are much required in programming languages and in CReact, the level of nesting is described by the number of '#'
 in the first line of the loop syntax.
 
-```
+```js
 <# f (var=1,var<5,var++)
     <## f (var1=1,var1<5;var1++)
         Statements
@@ -379,17 +382,15 @@ This process of transpiling is not very different from what is used in condition
 
 Now implementing functions requires two components of the process that must be implemented in our esolang. One being the statement where the function is define, and the other being the statement where the function is called in our main function. ( Please note that Creact does not have a single main function wherein all the code resides, but may have multiple functions outside the main function as well just like C/C++).
 
-
-
 An example of function definition syntax in Creact -
 
 ```
      <fx in gcd_algo(in a,in b)>
         <? if(a==0)
-            <throw b/> 
+            <throw b/>
         ?>
         <? else
-            <throw gcd_algo(b%a,a)/> 
+            <throw gcd_algo(b%a,a)/>
         ?>
     </gcd_algo>
 
@@ -397,15 +398,15 @@ An example of function definition syntax in Creact -
 
 As you can see from the above snippet, the functions are define using 'fx', which is followed by the return type of the function. The function name takes the parameters of the function, and then we write the function body. 'throw' is the keyword to return a value. (similar to the keyword return in C/C++)
 
-An example of function call syntax in the main function in Creact - 
+An example of function call syntax in the main function in Creact -
 
 ```
     <fx res=gcd_algo(val1,val) />
 ```
 
-Here, our transpiler understands that a function is being called from 'fx'. We have defined an integer 'res' previously, which will store the returned value from the function 'gcd_algo'. ''val1' and 'val' are the parameters beinf sent to the function. 
+Here, our transpiler understands that a function is being called from 'fx'. We have defined an integer 'res' previously, which will store the returned value from the function 'gcd_algo'. ''val1' and 'val' are the parameters beinf sent to the function.
 
-We check for the 'fx' term in the statement to check if it is a functional block. 
+We check for the 'fx' term in the statement to check if it is a functional block.
 
 Now, before we start parsing, we need to check if our statement is the definition of the function, or the function call in the main function.
 If the statement is a function call, we need to parse it in the following way :
@@ -413,16 +414,16 @@ If the statement is a function call, we need to parse it in the following way :
 ```
     <fx res=gcd_algo(val1,val) />      ===========>        res=gcd_algo(val1,val);
 ```
-At this point, this is comparatively one of the simpler parsings that we do, using a temporary string vector. We also need to make sure that if any variables are defined in the statement, we find their respective values from the 'varKey' database that we have predefined. 
+
+At this point, this is comparatively one of the simpler parsings that we do, using a temporary string vector. We also need to make sure that if any variables are defined in the statement, we find their respective values from the 'varKey' database that we have predefined.
 
 If the statement is a function definition instead, we parse the return type from 'varKey', and then parse the parameters as done previously.
 The body of the function shall be parsed as it is, as our previously defined functions such as arithmetic take care of everything. We do this parsing until we reach the end of the function.
 
-
 As we are converting our esolang file to a C file , and by syntax of C we already know that a function defined anywhere in the program should be defined with a function signature at the beginning of the program as shown in an example snippet below :
 
 ```c
-int fund(param); // This is a function signature so for each function defined a signature needs to be added while parsing
+int func(param); // This is a function signature so for each function defined a signature needs to be added while parsing
 int main(){
     func(setter)
 }
@@ -451,97 +452,87 @@ Now as we have the function signature in another vector, while writing the equiv
 
 ## Step 7: Dynamic Arrays
 
-If you came this far you would surely know how much we have worked with vectors in the whole project, so lets try to make one in esolang, it would work as a normal vector as usual just would be able to work with integers.
+If you came this far you would surely know how much we have worked with vectors in the whole project, so let's try to make one in esolang, it would work as a normal vector as usual just would be able to work with integers.
 
-To understand how to implement it, lets focus on memory a bit :
+To understand how to implement it, let's focus on memory a bit :
 
-In arrays we always statically ask for some contiguous block of memory from the heap, which once given cant be extended further more this restricts it to work further more with humongous amount of data.
+In arrays, we always statically ask for some contiguous block of memory from the heap, which once given cant be extended furthermore this restricts it to work furthermore with a humongous amount of data.
 
-So we shall use an easier approach that is allocate each block of memory one at a time and link it up using the address of that block, you must have guessed it right by now, we shall implement a linked list to allocate single block of memory for us and operate on it in a sameway as we do in any normal regular vectors, which is pushing in elements, popping elements out of it, updating any index or searching for item in that index.
+So for this, we have to delve deep into the domain of memory management, and one of the chief reasons we're working on this project in C/C++ is because memory management is offered best in class by C/C++ due to the age-old concept of pointers.
+In C we have 2 very interesting functions in stdlib.h library which include the malloc & realloc see their definition bellow :
 
-In CReact we shall be using a different syntax to implement the dynamic arrays concept i.e
+1. malloc() :- The “malloc” or “memory allocation” method in C is used to dynamically allocate a single large block of memory with the specified size. It returns a pointer of type void which can be cast into a pointer of any form.
 
-```jsx
-    <<$tream _datatype _varname >>//Initializing a dynamic array
+Syntax : `ptr = (cast-type*) malloc(byte-size)`
 
-    //Some operations to implement here include
+2. realloc() :- “realloc” or “re-allocation” method in C is used to dynamically change the memory allocation of a previously allocated memory. In other words, if the memory previously allocated with the help of malloc or calloc is insufficient, realloc can be used to dynamically re-allocate memory.
 
-    <<_varname.plus(value)>> // To push in elements
+Syntax : `ptr = realloc(ptr, newSize)` ,where ptr is an previously allocated pointer
 
-    <<_varname.minus(value)>> // To pop out elements
+So how can we use these functions to implement dynamic arrays, basically we will be using a pointer by allocating a fixed amount of space initially, say 2 blocks of memory, and to keep things simple we shall be using an integer array, so say :
 
-    <% _varname[pos] = val %> // To update the element at that position
-
-    <% c = _varname[pos] %> // To assign a value to a certain variable
+```cpp
+int* ptr = (int*)malloc(sizeof(int)*2);
 
 ```
 
-Now to implement the linkedlists based approach on it, you must be wondering we have to implement linkedlists in Creact but in reality it isn't required, firstly the newer tags `<< >>` makes it easier to separate the IO and function call on dynamic arrays & then start to work on it.
+This allocates 2 blocks of memory to the ptr variable to store 2 values, but say we have to enter more variables so we shall be using realloc module and reallocating ourselves more space for comfort it shall be double the present size of the array, so initially, if it is 2 it shall become 4, then 8, 16 likewise :
 
-Firstly we shall look for the syntax with `<<$` this will help us recognise that a vector is being initiliazed with this we shall start with the linkedlist part :
+```cpp
+ptr = (int*)realloc(ptr,sizeof(int)*present_size*2)
 
-In the whole project we are writing the language in a simple txt file and then parsing it and printing in another file , so we shall use the same approach here, write the C code for creation, push, pop, update, show, operaions in a separate file and use it as a helper file and as we find the respective syntax insert the whole code in a vector of strings which is then inserted in the final C file after the header and function signatures such that calling those functions in Creact will be only thing what shall remain then :
+```
 
-Let's try this approach :
+Likewise, the extended memory allocation works, but remember this reallocation can work effectively when used in the present block of memory is completely used up, so we can use an if-else block to keep a check and insert if and only if the present allocated space is completely used up.
+
+Now in our CReact how shall we implement this, for dynamic arrays we are using a special syntax and tags which include :
+
+Syntax `<<stream::(_datatype) _varname>>`
+
+This initializes a pointer variable as shown as well as allocates the constant 2 blocks memory as well as can be programmed to trigger insertion of important headers in the program like `stdlib.h` or any preprocessor derivatives.
+
+Now, this is not the only thing that shall complete the allocation completely as we have to put in more layers to the code,
+
+1. Firstly, say a user initializes 10 such dynamic arrays each can be initialized with the same size i.e 2 but while working on the push/pop operations the total size of each array might vary considering that fact the variable that works as size-reallocator, should be assigned a unique value that should only control the size of that specific array...
+
+2. Secondly say an array initially 2, extended to 16 sizes and filled with only 10 elements, so while operating why should we work with that extra 6 spaces as a pop function will give errors at that part, so we shall be using a flag-pointer that shall always point to the last element pushed inside and if more are pushed inside then do a flag++ with that of the pointer else on popping flag-- to get the required answer, moreover the counter-flag for each array should also be unique as several elements in them can vary as well.
+
+This shall help with the proper allocation.
+
+Now, let's move to its functions, we have :
+
+    - plus() : To push in values, but there is a check if the size is full/not, because then we have to reallocate, now unlike in a loop, it can be called anywhere so for that reason, we have to constantly check whether the size limit is reached because then we have to apply an if-else check which on each push operation would make it more cumbersome, so we shall write the important functions in a helper.txt file and write those functions in the main file just after the headers, as it shall help in quick reallocation and prevent writing an if-else check before each push-back.
+
+    - minus() : To pop out elements, we have to work with the counter-flag which shall decrease by 1 automatically if a function is encountered.
+
+    -show() : As this is a regular function so we shall insert it with the reallocation construct from a file to display the number of elements up to the flag.
+
+To work with them we shall manipulate the strings and display them in the correct format :
+
+For example :
 
 ```cpp
 
-Folder structure :
-
-|---Main folder
-    |---tokenizer.cpp
-    |---helper.txt
-
-In helper.txt :
-//BASIC LINKED LIST NODE CREATION SNIPPET
-#include<stdlib.h>
-struct Node {
-    int data;
-    struct Node *next;
-}
-struct Node *createNode(struct Node *root){
-    root = (struct Node*)malloc(sizeof(struct Node));
-    return root;
-}
-
-In tokenizer.cpp
-
-ifstream._varname("helper.txt");
-while(getline(_varname, localstring)){
-    store in vector of strings;
-}
-ofstream.writeIn(result_file);
+    v.plus(x);      ===============>    *(v+cnt++) = x; , where cnt is the counter flag
 
 ```
 
-hence using this approach we can work with initilizing...
+Now lastly 2 other operations that should work on it are updating a specific position & assigning the value of a specific block of the array to a variable, as both come under the mathematical/logical operations so it is done using the `<% %>` tags :
 
-Now for functions like push, pop and others we have to define more functions in helper.txt & call them appropriately....
-One more problem that can be faced here is of a basic operation which will fail that is : `v[position] = x`, as the above data
-structure is a linkedlist so directly calling the positions is not permitted for that we have to tweak our already set functions in such a way so that it can recognise the call and act according to the function which is being asked to implement :
-
-Lets see exactly what we are talking about :
-
-In linked list to reach a specific position we have to always scan it linearly in any measure to do so, as they are connected by certain addresses and are separate blocks of memory so to link them we have to go through each of the nodes one by one,.
-
-Now to work on it :
-
-```cpp
-    //1st statement
-    vec[position] = x;  // This means updating the block at that position.
-
-    x = vec[position];  // This means assigning a variable with the value at that position.
-
-```
-
-To work on this we have to keep in mind the position of the equals symbol and parse it carefully as it calls a function very differently like for example :
+For example :
 
 ```cpp
 
-   To write vector[position] = x , where vector is the dynamic array name, x is a variable
-   In Creact we write it as : <% vector[position] = x %>
-   In C we would write it as : update(&root_node, position, value), where root_node is the headnode;
+Update operations :
+
+    v[position] = x;    ===============>    *(v+position) = x;
+
+Assigning Operations :
+
+    x = v[position];    ===============>    x = *(v+position);
 
 ```
 
-In similar way we follow up with the assigning feature and parse accordingly.
+Now to parse it correctly we can look for the position of '=', divide the strings into 2 halves then on each half tokenize the parts like a variable name, value and place it accordingly.
+
+So that's how we can work with dynamic arrays in CReact.
