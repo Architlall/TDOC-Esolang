@@ -16,6 +16,13 @@ So we would be building a new esoteric (basically means crazy) language that get
 
 So here we shall go step by step and understand how to transpile our code in any format to a proper C code for easier reference. We have used a simple language like HTML to work with.
 
+## Introduction Resources :
+
+    - Overview Of C++ Language (Docs)  : https://www.cplusplus.com/reference/
+    - Overview Of C++ Language (Docs)  : https://docs.microsoft.com/en-us/cpp/cpp/?view=msvc-160
+    - Overview Of C++ Language (Video) : https://www.youtube.com/watch?v=vLnPwxZdW4Y&t=10067s
+    - Overview Of Pointers in C/C++    : https://www.youtube.com/watch?v=zuegQmMdy8M
+
 ## Step 0 : Basics
 
 ### An overview of STL and its concepts :
@@ -306,7 +313,7 @@ For example:-
 
 In the log function, the string between the htpl log tags are parsed into an equivalent format string statement one letter at a time until it has encountered a "${" string
 
-### Pseodocode:
+### Pseudocode:
 
     Function(string param)
         Let str be an empty string to hold the result
