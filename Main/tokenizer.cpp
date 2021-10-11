@@ -19,7 +19,7 @@ void dataSet()
 {
     varKey.insert({"in", "int"});
     varKey.insert({"ch", "char"});
-    varKey.insert({"st", "char[]"});
+    varKey.insert({"str", "char*"});
     varKey.insert({"<htpl>", "#include<stdio.h>\n"});
     varKey.insert({"<main>", "int main()\n{"});
     varKey.insert({"take", "scanf()"});
@@ -28,7 +28,7 @@ void dataSet()
     varKey.insert({"/log", ";"});
     varKey.insert({"int", "%d"});
     varKey.insert({"char", "%c"});
-    varKey.insert({"string", "%s"});
+    varKey.insert({"char*", "%s"});
 }
 //Generates an output C-Lang file
 void ouputFileReader()
@@ -309,22 +309,24 @@ void fileVectorBuilder(std::string res)
         }
         else if (res[1] == '%' && res.find('[') != std::string::npos)
         {
-            int c1=0,c2=0;
+            int c1 = 0, c2 = 0;
             res = res.substr(2, res.length() - 4);
             res = fspaceRemover(res);
-            std::string p1 = fspaceRemover(res.substr(0,res.find('=')));
-            std::string p2 = fspaceRemover(res.substr(res.find('=')+1,res.length()-res.find('=')-1));
-            if(p1.find('[')!=std::string::npos && p1.find(']')!=std::string::npos){
+            std::string p1 = fspaceRemover(res.substr(0, res.find('=')));
+            std::string p2 = fspaceRemover(res.substr(res.find('=') + 1, res.length() - res.find('=') - 1));
+            if (p1.find('[') != std::string::npos && p1.find(']') != std::string::npos)
+            {
                 std::string var_name = p1.substr(0, p1.find('['));
                 std::string val = p1.substr(p1.find('[') + 1, p1.find(']') - p1.find('[') - 1);
-                p1 = "*(" + var_name + "+" + val + ")" ;
+                p1 = "*(" + var_name + "+" + val + ")";
             }
-            if(p2.find('[')!=std::string::npos && p2.find(']')!=std::string::npos){
+            if (p2.find('[') != std::string::npos && p2.find(']') != std::string::npos)
+            {
                 std::string var_name2 = p2.substr(0, p2.find('['));
                 std::string val2 = p2.substr(p2.find('[') + 1, p2.find(']') - p2.find('[') - 1);
                 p2 = "*(" + var_name2 + "+" + val2 + ")";
-            } 
-            codeSnippets.push_back(p1+" = "+p2+";");
+            }
+            codeSnippets.push_back(p1 + " = " + p2 + ";");
         }
         else if (res[res.length() - 1] == '>' && res[res.length() - 2] == '/')
         {
@@ -349,7 +351,7 @@ void fileVectorBuilder(std::string res)
                 std::vector<int> comma_separators;
                 for (int i = 0; i < res.length(); i++)
                 {
-                    if (res[i] == '=')
+                    if (res[i] == '=' || res[i] == ',')
                     {
                         helper_string += ' ';
                         helper_string += res[i];
@@ -359,12 +361,13 @@ void fileVectorBuilder(std::string res)
                     {
                         helper_string += res[i];
                     }
-                    if (helper_string == "in" || helper_string == "ch")
+                    if (helper_string == "in" || helper_string == "ch" || helper_string == "str")
                     {
                         helper_string += ' ';
                     }
                 }
                 res = helper_string;
+                std::cout << res << "\n";
                 for (int i = 0; i < res.length(); i++)
                 {
                     if (res[i] != ' ')
@@ -373,45 +376,58 @@ void fileVectorBuilder(std::string res)
                     }
                     else
                     {
-                        tmp.push_back(stf);
-                        stf = "";
+                        if (stf == "," || stf == " ")
+                        {
+                            stf = "";
+                        }
+                        else
+                        {
+                            std::string::iterator end_pos = std::remove(stf.begin(), stf.end(), ' ');
+                            stf.erase(end_pos, stf.end());
+                            tmp.push_back(stf);
+                            stf = "";
+                        }
                     }
                 }
-                if (tmp[0] == "in" || tmp[0] == "ch")
+                if (tmp[0] == "in" || tmp[0] == "ch" || tmp[0] == "str")
                 {
                     res = varKey.find(tmp[0])->second + res.substr(res.find(' '), res.length() - res.find(' ') - 1) + ';';
                     codeSnippets.push_back(res);
                     std::string help_string = "";
                     std::vector<std::string> ins_vector;
-                    for (int i = 0; i < res.length(); i++)
+                    for (int i = 2; i < tmp.size(); i++)
                     {
-                        if ((res[i] >= 'a' && res[i] <= 'z') || (res[i] >= 'A' && res[i] <= 'Z') || (res[i] >= '0' && res[i] <= '9'))
+                        if (i % 2 == 0 && (tmp[i] != "=" || tmp[i] != ","))
                         {
-                            help_string += res[i];
+                            variable_DataMapper.insert({tmp[i], tmp[0]});
+                            std::cout << tmp[i] << " " << tmp[0] << "\n";
                         }
-                        else
-                        {
-                            ins_vector.push_back(help_string);
-                            help_string = "";
-                        }
-                    }
-                    std::string stf;
-                    for (auto it : varKey)
-                    {
-                        if (it.second == ins_vector[0])
-                        {
-                            stf = it.first;
-                            break;
-                        }
-                    }
-                    for (int i = 1; i < ins_vector.size(); i++)
-                    {
-                        variable_DataMapper.insert({ins_vector[i], stf});
                     }
                 }
             }
             else if (x == 0)
             { //for <in val/> and <take val/>
+                std::string helper_string = "";
+                std::vector<int> comma_separators;
+                for (int i = 0; i < res.length(); i++)
+                {
+                    if (res[i] == '=' || res[i] == ',')
+                    {
+                        helper_string += ' ';
+                        helper_string += res[i];
+                        helper_string += ' ';
+                    }
+                    else
+                    {
+                        helper_string += res[i];
+                    }
+                    if (helper_string == "in" || helper_string == "ch" || helper_string == "str")
+                    {
+                        helper_string += ' ';
+                    }
+                }
+                res = helper_string;
+                std::cout << res << "\n";
                 for (int i = 0; i < res.length(); i++)
                 {
                     if (res[i] != ' ')
@@ -420,47 +436,137 @@ void fileVectorBuilder(std::string res)
                     }
                     else
                     {
-                        tmp.push_back(stf);
-                        stf = "";
-                    }
-                }
-                if (tmp[0] == "in" || tmp[0] == "ch")
-                {
-                    res = varKey.find(tmp[0])->second + res.substr(res.find(' '), res.length() - res.find(' ') - 1) + ';';
-                    codeSnippets.push_back(res);
-                    std::string help_string = "";
-                    std::vector<std::string> ins_vector;
-                    for (int i = 0; i < res.length(); i++)
-                    {
-                        if ((res[i] >= 'a' && res[i] <= 'z') || (res[i] >= 'A' && res[i] <= 'Z') || (res[i] >= '0' && res[i] <= '9'))
+                        if (stf == " ")
                         {
-                            help_string += res[i];
+                            stf = "";
                         }
                         else
                         {
-                            ins_vector.push_back(help_string);
-                            help_string = "";
+                            std::string::iterator end_pos = std::remove(stf.begin(), stf.end(), ' ');
+                            stf.erase(end_pos, stf.end());
+                            tmp.push_back(stf);
+                            stf = "";
                         }
                     }
-                    std::string stf;
-                    for (auto it : varKey)
+                }
+                if (tmp[0] == "in" || tmp[0] == "ch" || tmp[0] == "str")
+                {
+                    if (tmp[0] == "in" || tmp[0] == "ch")
                     {
-                        if (it.second == ins_vector[0])
+                        res = varKey.find(tmp[0])->second + res.substr(res.find(' '), res.length() - res.find(' ') - 1) + ';';
+                        codeSnippets.push_back(res);
+                        for (int i = 2; i < tmp.size(); i++)
                         {
-                            stf = it.first;
-                            break;
+                            if ((tmp[i] != "=" || tmp[i] != ","))
+                            {
+                                variable_DataMapper.insert({tmp[i], tmp[0]});
+                            }
                         }
                     }
-                    for (int i = 1; i < ins_vector.size(); i++)
+                    else
                     {
-                        variable_DataMapper.insert({ins_vector[i], stf});
+                        std::string strvars = varKey.find(tmp[0])->second;
+                        bool swcase = false;
+                        for (int i = 1; i < tmp.size(); i++)
+                        {
+                            if (tmp[i][0] >= 'a' && tmp[i][0] <= 'z')
+                            {
+                                if (swcase == false)
+                                {
+                                    strvars += " ";
+                                    strvars += tmp[i];
+                                    swcase = true;
+                                }
+                                else
+                                {
+                                    strvars += " *";
+                                    strvars += tmp[i];
+                                }
+                            }
+                            else
+                            {
+                                strvars += tmp[i];
+                            }
+                        }
+                        // std::cout<<strvars<<"\n";
+                        res = strvars + ';';
+                        codeSnippets.push_back(res);
+                        for (int i = 2; i < tmp.size(); i++)
+                        {
+                            if ((tmp[i] != "=" || tmp[i] != ","))
+                            {
+                                variable_DataMapper.insert({tmp[i], tmp[0]});
+                            }
+                        }
                     }
                 }
                 else if (tmp[0] == "take")
                 {
+                    std::vector<std::string> string_keeper;
+                    std::string inchvars, strvars;
                     res = varKey.find(tmp[0])->second;
-                    codeSnippets.push_back(res);
-                    codeSnippets.push_back(tmp[1]);
+                    bool swcase = false;
+                    for (int i = 1; i < tmp.size(); i++)
+                    {
+                        if (variable_DataMapper.find(tmp[i]) != variable_DataMapper.end())
+                        {
+                            if (variable_DataMapper.find(tmp[i])->second == "str")
+                            {
+                                if (string_keeper.empty())
+                                {
+                                    std::string ins_var1;
+                                    std::ifstream readFile("stringhelper.txt");
+                                    while (getline(readFile, ins_var1))
+                                    {
+                                        var_keeper.push_back(ins_var1);
+                                    }
+                                }
+                                string_keeper.push_back(tmp[i]);
+                            }
+                            else
+                            {
+                                inchvars += tmp[i];
+                            }
+                        }
+                    }
+                    std::string inchvars1 = "", skl = "";
+                    inchvars += ',';
+                    std::vector<std::string> stashin;
+                    for (int l = 0; l <= inchvars.length(); l++)
+                    {
+                        if (inchvars[l] != ',')
+                        {
+                            skl += inchvars[l];
+                        }
+                        else
+                        {
+                            stashin.push_back(skl);
+                            skl = "";
+                        }
+                    }
+                    std::cout<<stashin.size()<<"\n";
+                    for (int i = 0; i < stashin.size()-string_keeper.size(); i++)
+                    {
+                        if((stashin[i][0]>='a' && stashin[i][0]>='z') || (stashin[i][0]>='A' && stashin[i][0]>='Z'))
+                            inchvars1+=(stashin[i]);
+                            inchvars1+=',';
+                    }
+                    std::cout << inchvars1 << "\n";
+                    inchvars = inchvars1.substr(0, inchvars1.length() - 1);
+                    if (inchvars.length() > 0)
+                    {
+                        codeSnippets.push_back(res);
+                        // std::cout<<inchvars<<"\n";
+                        codeSnippets.push_back(inchvars);
+                    }
+                    for (int i = 0; i < string_keeper.size(); i++)
+                    {
+                        if (string_keeper[i] != ",")
+                        {
+                            strvars = string_keeper[i] + "=" + "stringINIT(" + string_keeper[i] + ");\n";
+                            codeSnippets.push_back(strvars);
+                        }
+                    }
                 }
             }
         }
@@ -637,12 +743,12 @@ void memoryPlay(std::string res)
         }
     }
 }
-// int main()
-int main(int argc, char const *argv[])
+int main()
+//int main(int argc, char const *argv[])
 {
     std::string res;
-    std::ifstream readData(argv[1]);
-    // std::ifstream readData("input.txt");
+    // std::ifstream readData(argv[1]);
+    std::ifstream readData("string.html");
     int switch_btn = 0;
     while (getline(readData, res))
     {
