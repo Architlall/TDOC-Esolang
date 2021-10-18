@@ -1,105 +1,112 @@
-## Step 1: INITIAL STEPS: WRITING A HELLO WORLD OR PRINTING PROGRAM IN THE ESOLANG
+# CReact- An Programmable HyperText Markup Language
 
-The given eso-lang follows an HTML syntax construct so for example we have used here the following syntax :
+“ What if we could hack NASA with HTML!” - a dream of every programmer
 
-```html
-<htpl>
-    <main>
-        <log>Hello World </log>
-    </main>
-</htpl>
-```
+Well we took it seriously, so let's make something that could extend HTML beyond its limits, so we went to the GOD of all languages to seek some help, yea it's not python it’s the old age C, and guess what we got ourselves…..
 
-The snippet is a very simple code so let's de-structure it to understand the working behind the scenes.
+CReact is a brand new crazy language that does all, plus its open-source add more layers to it make it more powerful :)
 
-The principal thing is removing the initial spaces from each string line, the reason being we just require what's given the extra spaces will only cause a hindrance so it's better to remove them & only work with what's required...
+So we would be building a new esoteric (basically means crazy) language that gets interpreted to C language and gets compiled to give any result you want: conditionals, loops, characters, arithmetic, functions, recursion...
 
-For this, we can implement a basic loop function that reads the string, and as a character other than " " is encountered would refactor itself...
+## Prerequisites :
 
-### Pseudocode
+    1. A tad bit of knowledge on C and CPP both...
 
-```
-    INPUT a string variable
-    FOR i in string_var
-        IF i != ' '
-            string_var = string_var[i,length of string_var-i]
-            BREAK
+    2. Slight overview of bash scripting and makefile.
 
-```
+So here we shall go step by step and understand how to transpile our code in any format to a proper C code for easier reference. We have used a simple language like HTML to work with.
 
-Now working with tags:
+## Installation and setup of VS Code and MinGW on Windows -
+ for minGW setup -                         https://www.msys2.org/
+ for running you first code in vs code -   https://code.visualstudio.com/docs/cpp/config-mingw
 
-Here the 1st thing which is the `<htpl>` tag is a constant keyword identifier, as it will be always written to start coding in your esolang...
+## Introduction Resources :
 
-So for that instance, we can store the appropriate code for this specific tag in our globally defined tuple collection, and on recognizing this specific tag can push the appropriate code inside our result container which will be pushed in the parsed file later.
+    - Overview Of C++ Language (Docs)  : https://www.cplusplus.com/reference/
+    - Overview Of C++ Language (Docs)  : https://docs.microsoft.com/en-us/cpp/cpp/?view=msvc-160
+    - Overview Of C++ Language (Video) : https://www.youtube.com/watch?v=vLnPwxZdW4Y&t=10067s
+    - Overview Of Pointers in C/C++    : https://www.youtube.com/watch?v=zuegQmMdy8M
 
-Now in this case we have a string with log as `<log>(word)</log>`, so the only way to parse it is breaking the string in parts and getting the required portion in this case checking for a keyword “log” that in our tuple collection stores a value of PRINT statement,
+## Step 0 : Basics
 
-So using string manipulation extracting the word “log” we can get the statement print identifier of the result programming language; it can be “printf for C”, “System.out.print for Java” or “console.log for Javascript” etc which can be inserted in the container.
+### An overview of STL and its concepts :
 
-Whereas the respective closing tag can be distinguished with a starting 2 indexes of “<\”
-It can be replaced by any sequence user likes say “); for C”, or simply “)” for python or Js, in a similar way the material to be inserted can be extracted by manipulating the strings.
+The Standard Template Library (STL) is a set of C++ template classes to provide common programming data structures and functions such as lists, stacks, arrays, etc. It is a library of container classes, algorithms, and iterators. It is a generalized library and so, its components are parameterized.
 
-Now arises a concern say we are printing a large number of words as shown as :
+Containers or container classes store objects and data.
+Each container contains some inbuilt functions that help in operating on the containers and manipulating
+them to store as well modify data in it. These containers work as parameterized template classes, which are called from the library appropriately when required, lets look at 2 main examples of containers that are being used in our project :
 
-```html
-<log>
-  (some words --------------------------------------------
-  ------------------------------------------------------------
-  --------------------------------------------------end)
-</log>
-```
+1. Vectors: Vectors are the same as dynamic arrays with the ability to resize themselves automatically when an element is inserted or deleted, with their storage being handled automatically by the container. Vector elements are placed in contiguous storage so that they can be accessed and traversed using iterators. In vectors, data is inserted at the end. Inserting at the end takes differential time, as sometimes there may be a need of extending the array. Removing the last element takes only constant time because no resizing happens.
 
-Here we can’t simply extract the string in between and work on it as each line is read separately so for this reason we can extract part of the string having the tags opening/closing and adding on to it to construct the whole paragraph present between the log tags…
+For example :
 
-So this points out that simply parsing and writing in an output file won’t do for that we have another solution which is using that same container in which we are storing the parsed values accordingly in a specific pattern so that it can be arranged to get the desired parsed code in the output file...
+```cpp
 
-The list shall store in the strings inside it which are to be inserted and at the creation and scripting period would be activated to fill in the string nodes line after line.
-
-The printf implementation :
-
-```py
-
-    [   {   “print()“   }  ,  { “Material to be inserted i.e connected parts of a multiline <log> ” }  ,  {   “;”    }];
+    vector<_datatype> _variablename;
+    Some basic functions include :
+    For a vector<int> v;
+    - v.push_back(val);
+    - v.pop(val);
+    - v.size();
 
 ```
 
-So it can be parsed as ==========> [ { “ print(“material---------”); “ } ]
+For more details check out this link: https://www.cplusplus.com/reference/vector/vector/
 
-and then re-inserted at the head node whereas removing the already present nodes.
+2. Unordered-Maps: unordered_map is an associated container that stores elements formed by the combination of key-value and a mapped value. The key value is used to uniquely identify the element and the mapped value is the content associated with the key. Both key and value can be of any type predefined or user-defined.
 
-This way we can create a simple printing program in our language.
+```cpp
 
-### Automating compilation using makefile and bash scripting
+    unordered_map<_datatype1,_datatype2> _variablename;
+    Some basic methods for an unordered_map mp include :
+    - mp.insert({val1,val2});
+    - mp.find(val1)->first = val1
+    - mp.find(val1)->second = val2
+```
 
-#### Makefile
+For more details check out this link: https://www.cplusplus.com/reference/unordered_map/unordered_map/
 
-        Make is a Unix utility that is designed to start the execution of a makefile. A makefile is a special file, containing shell commands, that you create and name makefile (or Makefile depending upon the system). While in the directory containing this makefile, you will typically make and the commands in the makefile will be executed
+### A Symbol Table :
 
-        Make keeps track of the last time files (normally object files) were updated and only updates those files which are required (ones containing changes) to keep the source file up-to-date.
+Though it sounds very tricky rather it isn't, so what does a symbol table does, in layman terms it helps us search for a particular data or a particular value based on our query, so here our query can be based on keywords which would be the basic constructs of the language which shouldn’t be modified and should inject predetermined code whenever needed in the program this can significantly reduce the time complexity of the code making it more efficient.
 
-        With this, you don't have to compile the code repeatedly, a simple make command in the terminal will compile the changed code
+A basic implementation of such a table will be storing a collection of tuples having a key-value pair to be used to insert code snippets on the go.
 
-#### Bash scripting
+For example: let's say I stored a string named HTML having a value of say “#include” or say “import” in java so at first instance it can pop this value to be stored on a container.
 
-    A bash script file is a file containing several bash commands, all of which gets executed once the bash script file is run on the system
-    In this project contents of the bash script file include
-        1. Changing working directory to Main
-        2. make command
-        3. Running transpiler binary with the file name
-        4. Compiling transpiled program using g++
-        5. Executing transpiled binary
-        6. Removing transpiled c file and binary
-    Bash script files can be run using the command ./script.sh
+Ex-Tuple Container : [{“html”:”#include”},{ “h1”:”headers”} ,.....likewise].
 
-Note: you might need to allow execution of the bash script in your system by using:` chmod +x script.sh` or ` chmod 777 script.sh`
+### File Input/Output in programming :
 
-#### Executing the program
+While handling files we should take care of the commands that are used with them, which generally are associated with reading/write operations...
 
-    You need to place a .txt file in the Main folder with contents of CReact code to be executed
-    then change directory to root of the project (if you are not already there) then execute the commands
+In Read-only operations it can read each line of string which is written in another file and character by character arranges it to form each line in the file
+
+In write operations, we can work out by rendering or parsing the text lines by manipulating the string statements and writing them in a file.
+
+In C++, we have the file operations contained in the header called `#include<fstream>`
+which can be included to do the following operations :
+
+    -ifstream = Reading from a file.
+    -ofstream = Writing to a file.
+    -fstream = to do both the operations.
+
+Basic Syntax :
+
+```cpp
+    - Reading:
+    string st;
+    ifstream myfile("<filename>")
+    while(getline(myfile,st)){
+        //Here we get each line from the txt file given above
+    }
+    - Writing:
+    ofstream writeIn("<filename>")
+    writeIn << /* statement */ <<"\n"
 
 ```
-chmod +x script.sh
-./script.sh input.txt # assuming name of the file is input.txt
-```
+
+For more details on file handling in Cpp checkout: https://www.cplusplus.com/doc/tutorial/files/
+
+In the project, as we shall be writing the code on a .txt file so your transpiler script shall read the esolang-code from the file line by line and parse each line as a collection of characters, so here we shall take each line as an input from the base .txt file and parse it accordingly and store it in a container which shall allow us to make changes in the placement of values whenever writing in the result file at last (this seems unnecessary and rather it is more practical to just inject code inside the output file directly but there's a catch to do so which we'll get through later..)

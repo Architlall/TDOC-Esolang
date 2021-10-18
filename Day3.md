@@ -1,127 +1,139 @@
-## Step 4: Conditional Statements
+## Step 2: Working with Data Types and Input/Output
 
-Whenever we have to implement a logic it doesn't end with just mathematical operations, sometimes to check whether what we are working with is logically apt or not generally we use an if-else block that makes it easier to question and follow a certain pathway in that manner.
+Taking user input is a very basic task that is expected of our esolang. For convenience let us assume that we have already declared a variable of integer type (we will see how to do that later in this section).
 
-Any modern-day programming language is always equipped with the power to question a certain course of action and chalk out a working plan accordingly, this helps us execute tasks in a much simpler way and integrate segmented code to make it multi-functional.
-
-In basic programming lang a simple if-else block is generally written as :
-
-```
-Pseudocode :
-
-    IF(cond1)
-        Execute this part
-    ELSE IF(cond2)
-        Execute this part
-    ELSE
-        Execute this last part
-
-```
-
-In our CReact Esolang to make things more intuitive and much simpler to understand we follow the following syntax :
+To understand how to achieve this, our first step is to decide what our user input syntax is going to look like. In CReact, the syntax that we have defined is as follows :
 
 ```js
-If block clause :
-
-    <? if(cond1)
-        statement1
-    ?>
-    <? elif(cond2)
-        statement2
-    ?>
-
+    declare the integer variable named var
+    <take var/>
 ```
 
-Take it as a fragment that renders an if-else construct to work with, here we shall first look for the special tag such that the angular brackets have "?" inside it which triggers a function that works with conditionals, here we shall strip down the spaces again, this shall then give us only the required string to work with, after which we shall look for some general keyword associated with conditionals and look for them to properly format the substring to arrange the condition properly and add an opening a "{" then push in the required statements inside temp-container and use the last identifier "?>" that can push in the required the closing bracket as "}".
-
-### A basic conversion:
-
-```js
-                       <? if(cond1)              if(cond1){
-                           statement1               statement1;
-                       ?>                        }
-
-```
-
-Now to add to more functionality we shall implement nested conditions in the if-else block and differentiate it from the outside marker we shall implement a unique identifier logic that works with the help of indentation, like in the CReact we have made nest if-else block logic work by the help of adding indentation based on the no. of '?' one adds to identify where is the block lying for instance
-
-### Example helper
-
-```js
-
-(space)  <?
-(space)        if(cond1)
-(space)(space)<??
-                    if(cond2)
-(space)(space)??>
-(space)  ?>
-
-```
-
-Here if you can see a pattern if the nested condition increases so does the number of '?' in the tags, this does what is it
-
-    * Firstly helps the interpreter parse the conditionals easily as it will be able to differentiate between the 2 blocks and put the C interpretation more clearly
-
-    * Make code look easier to design.
-
-So that's how we develop the power of conditions in our programming language.
-
-## Step 5: Loops
-
-Loops are an essential programming language utility to instruct the sequence of operations to repeat itself a set number of times or until a certain condition is met. Loops reduce redundancy in code and also the effort to repeat operations in a programming language
-
-In general, the syntax of common loops in modern-day programming languages are
-
-```
-Pseudocode :
-
-    FOR(DECLARATION; CONDITION; ITERATION)                  WHILE(CONDITION)
-        Execute Statement                                       Execute Statement
-
-```
-
-## Syntax
-
-In our CReact Esolang to make things more intuitive and much simpler to understand we follow the following syntax :
-
-```js
-
-FOR CLAUSE :                                                WHILE CLAUSE:
-                <# f (declaration,condition,iteration)              <# w(condition)
-                    Statement                                           Statement
-                #>                                                  #>
-```
-
-Loops have a characteristic tag of '#' and the two loops are differentiated concerning the letter that shows at the start of
-the loop syntax, which is 'f' referring to for loop while 'w' for while loop, the traspiling program looks specifically for the '#'
-symbol to execute a function to parse loops. The function first strips off spaces from the statements and first determines which
-category of the loop the statements belong to (i.e. for or while). The statements are then compiled into the compiling programming language
-syntax for example:
+Our motive is to parse this syntax in such a way, that the desired output in our C file looks like :
 
 ```c
-In C:                                       In python
-
-    for(var=1;var<10;var++)                      for var in range(1,10,1):
-
-    while(var>10)                                while var > 10:
-
+    declared variable var
+    scanf("%d",&var);
 ```
 
-the beginning and conclusion of the statements in CReact are determined by the "<#" and "#>" respectively.
+To execute the above-mentioned translation, we use string manipulation to extract the word “take” to get the statement scan identifier of the result programming language(scanf in our case) from the predefined map, which can be inserted in the output file.
 
-## Nested loops
+Whereas the respective closing tag can be distinguished with a starting 2 indexes of “<\”
+It can be replaced by any sequence user likes say “); for C”, or simply “)” for python or Js, in a similar way the material to be inserted can be extracted by manipulating the strings.
 
-Nested loops are much required in programming languages and in CReact, the level of nesting is described by the number of '#'
-in the first line of the loop syntax.
+Now, very similar to the fashion in which we implemented the print function above, we have to use a dynamic array or list that stores the parsed values.
+
+Say a list has the contents for the print statement parsed as :
 
 ```js
-<# f (var=1,var<5,var++)
-    <## f (var1=1,var1<5;var1++)
-        Statements
-    ##>
-#>
+ [  {   “scanf()“   }  ,  { “variable_name” }  ,  {   “;”    }];
+```
+
+So it can be parsed as ==========> [ { “ scanf(“variable_name---------”); “ } ]
+and then re-inserted at the head node whereas removing the already present nodes.
+
+This is how we achieve a basic implementation of user input in our esolang.
+
+Now a programming language is incomplete without providing a base to specify its variables as anything that we write must have a meaning so to use certain variables for different purposes, in CReact an easy and simple method to define data types and introduce similarities with other programming languages we have created some predefined datatypes so that we can work with alphanumeric values :
+
+It is generally defined using keywords like "in" and "ch" with denotes the integer and character respectively in CReact, for making things crazier u can define it yourselves as anything u wish to...
+
+Maintaining the norms of React a variable can be statically initialized with a value under a self-closing bracket value :
+
+### Syntax
+
+```js
+    For static allocation :
+    < data_type variable_name = value />
+
+    For Dynamically allocation it can be written as :
+    < data_type variable_name, variable_name1 />
+
+    Example -> For integers it can be written as :  <in val = 75/>
 
 ```
 
-This way you can nest multiple while loops or for loops in while loops and vice-versa
-This process of transpiling is not very different from what is used in conditional statements
+Now to parse this we have to update our tuple data - collection my adding another tuple that can convert the defined identifier to the datatype and while reading the string statement just replace that with the value from the collection and parse that statement into the temporary storage container to push into the file at the end...
+
+The second part comes into initializing the same into our lang of choice when required, for eg in C we use different identifiers when taking input like for
+
+- Integer is denoted by %d in C
+- Character is denoted by %c in C
+
+So in the tuple collector, we shall initialize these identifiers with that of respective datatypes and while taking input using **<take var_name />** just write insert
+respective identifier and reconfigure the string in the same order as :
+
+```js
+    <take var_name/>
+    scanf("\\identifier\\",&var_name);
+
+```
+
+As this specific practice is followed in C language and this whole string is inserted into the temp_container to write afterward in the file...
+
+### Printing Multi Variables
+
+In this language es6 standards for formatting and printing the expression is used here, i.e. using ${varName}
+
+### Syntax
+
+```js
+<log>
+  {" "}
+  ${varName1} ${varName2}{" "}
+</log>
+```
+
+For example:-
+
+```js
+    <htpl>
+        <in a=3,b=4 />
+        <log>
+        Printing value of a and b : ${a} ${b}
+        </log>
+    </htpl>
+
+```
+
+In the log function, the string between the htpl log tags are parsed into an equivalent format string statement one letter at a time until it has encountered a "${" string
+
+### Pseudocode:
+
+    Function(string param)
+        Let str be an empty string to hold the result
+        Iterate 1 letter at a time over the string
+        if (given letter word is equal to '$' and next letter is '{')
+        search for variables declared before with the name between the braces
+        if a search was successful
+            add an appropriate modifier to str
+        else
+            add string including the braces as it is to str
+        else
+        add a string as it is to str
+    Return str
+
+The code in the above example converts into a format string
+for eg in C
+("Printing value of a and b : %d %d",a,b)
+while in python it would look like:
+f'Printing value of a and b : {a} {b}'
+
+This formatted string along with their variable names are passed onto their respective print statements hence facilitating multi-variable output
+
+## Step 3: Implementing arithmetic operations
+
+An esolang is incomplete if it cannot perform all the basic mathematical operations. Since we are following the syntax of HTML, we needed a specific way to tell the transpiler that the following line to be parsed is a mathematical operation. So the operator that we have used is '%'.
+
+```js
+    An example of a mathematical statement in Creact :
+
+    <% x = (x+(2*y)/z) %>
+
+```
+
+Achieving this transpilation is significantly simpler than you might be thinking. Note that we are just making a transpiler and not an actual compiler. So we just need to parse the statement and translate it to C/C++ and the GCC call does the rest of the work for us.
+
+So we parse the line after checking the presence of '%' and then transpile the mathematical statement with the help of a temporary vector to push into the parent vector string that must be transpiled. One point of caution in such parsing is checking that the spaces between different terms don't affect the process of parsing. Using the brute force method to check positions will not help and may lead to the code crashing. So instead use a temporary vector to push the different characters.
+
+In conclusion, we perform all the mathematical operations in Creact inside blocks that are labeled with '%' for easier understanding of the transpiler and maintaining the syntax of the language.

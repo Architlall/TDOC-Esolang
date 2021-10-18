@@ -1,139 +1,105 @@
-## Step 2: Working with Data Types and Input/Output
+## Step 1: INITIAL STEPS: WRITING A HELLO WORLD OR PRINTING PROGRAM IN THE ESOLANG
 
-Taking user input is a very basic task that is expected of our esolang. For convenience let us assume that we have already declared a variable of integer type (we will see how to do that later in this section).
+The given eso-lang follows an HTML syntax construct so for example we have used here the following syntax :
 
-To understand how to achieve this, our first step is to decide what our user input syntax is going to look like. In CReact, the syntax that we have defined is as follows :
-
-```js
-    declare the integer variable named var
-    <take var/>
+```html
+<htpl>
+    <main>
+        <log>Hello World </log>
+    </main>
+</htpl>
 ```
 
-Our motive is to parse this syntax in such a way, that the desired output in our C file looks like :
+The snippet is a very simple code so let's de-structure it to understand the working behind the scenes.
 
-```c
-    declared variable var
-    scanf("%d",&var);
+The principal thing is removing the initial spaces from each string line, the reason being we just require what's given the extra spaces will only cause a hindrance so it's better to remove them & only work with what's required...
+
+For this, we can implement a basic loop function that reads the string, and as a character other than " " is encountered would refactor itself...
+
+### Pseudocode
+
+```
+    INPUT a string variable
+    FOR i in string_var
+        IF i != ' '
+            string_var = string_var[i,length of string_var-i]
+            BREAK
+
 ```
 
-To execute the above-mentioned translation, we use string manipulation to extract the word “take” to get the statement scan identifier of the result programming language(scanf in our case) from the predefined map, which can be inserted in the output file.
+Now working with tags:
+
+Here the 1st thing which is the `<htpl>` tag is a constant keyword identifier, as it will be always written to start coding in your esolang...
+
+So for that instance, we can store the appropriate code for this specific tag in our globally defined tuple collection, and on recognizing this specific tag can push the appropriate code inside our result container which will be pushed in the parsed file later.
+
+Now in this case we have a string with log as `<log>(word)</log>`, so the only way to parse it is breaking the string in parts and getting the required portion in this case checking for a keyword “log” that in our tuple collection stores a value of PRINT statement,
+
+So using string manipulation extracting the word “log” we can get the statement print identifier of the result programming language; it can be “printf for C”, “System.out.print for Java” or “console.log for Javascript” etc which can be inserted in the container.
 
 Whereas the respective closing tag can be distinguished with a starting 2 indexes of “<\”
 It can be replaced by any sequence user likes say “); for C”, or simply “)” for python or Js, in a similar way the material to be inserted can be extracted by manipulating the strings.
 
-Now, very similar to the fashion in which we implemented the print function above, we have to use a dynamic array or list that stores the parsed values.
+Now arises a concern say we are printing a large number of words as shown as :
 
-Say a list has the contents for the print statement parsed as :
-
-```js
- [  {   “scanf()“   }  ,  { “variable_name” }  ,  {   “;”    }];
-```
-
-So it can be parsed as ==========> [ { “ scanf(“variable_name---------”); “ } ]
-and then re-inserted at the head node whereas removing the already present nodes.
-
-This is how we achieve a basic implementation of user input in our esolang.
-
-Now a programming language is incomplete without providing a base to specify its variables as anything that we write must have a meaning so to use certain variables for different purposes, in CReact an easy and simple method to define data types and introduce similarities with other programming languages we have created some predefined datatypes so that we can work with alphanumeric values :
-
-It is generally defined using keywords like "in" and "ch" with denotes the integer and character respectively in CReact, for making things crazier u can define it yourselves as anything u wish to...
-
-Maintaining the norms of React a variable can be statically initialized with a value under a self-closing bracket value :
-
-### Syntax
-
-```js
-    For static allocation :
-    < data_type variable_name = value />
-
-    For Dynamically allocation it can be written as :
-    < data_type variable_name, variable_name1 />
-
-    Example -> For integers it can be written as :  <in val = 75/>
-
-```
-
-Now to parse this we have to update our tuple data - collection my adding another tuple that can convert the defined identifier to the datatype and while reading the string statement just replace that with the value from the collection and parse that statement into the temporary storage container to push into the file at the end...
-
-The second part comes into initializing the same into our lang of choice when required, for eg in C we use different identifiers when taking input like for
-
-- Integer is denoted by %d in C
-- Character is denoted by %c in C
-
-So in the tuple collector, we shall initialize these identifiers with that of respective datatypes and while taking input using **<take var_name />** just write insert
-respective identifier and reconfigure the string in the same order as :
-
-```js
-    <take var_name/>
-    scanf("\\identifier\\",&var_name);
-
-```
-
-As this specific practice is followed in C language and this whole string is inserted into the temp_container to write afterward in the file...
-
-### Printing Multi Variables
-
-In this language es6 standards for formatting and printing the expression is used here, i.e. using ${varName}
-
-### Syntax
-
-```js
+```html
 <log>
-  {" "}
-  ${varName1} ${varName2}{" "}
+  (some words --------------------------------------------
+  ------------------------------------------------------------
+  --------------------------------------------------end)
 </log>
 ```
 
-For example:-
+Here we can’t simply extract the string in between and work on it as each line is read separately so for this reason we can extract part of the string having the tags opening/closing and adding on to it to construct the whole paragraph present between the log tags…
 
-```js
-    <htpl>
-        <in a=3,b=4 />
-        <log>
-        Printing value of a and b : ${a} ${b}
-        </log>
-    </htpl>
+So this points out that simply parsing and writing in an output file won’t do for that we have another solution which is using that same container in which we are storing the parsed values accordingly in a specific pattern so that it can be arranged to get the desired parsed code in the output file...
 
-```
+The list shall store in the strings inside it which are to be inserted and at the creation and scripting period would be activated to fill in the string nodes line after line.
 
-In the log function, the string between the htpl log tags are parsed into an equivalent format string statement one letter at a time until it has encountered a "${" string
+The printf implementation :
 
-### Pseudocode:
+```py
 
-    Function(string param)
-        Let str be an empty string to hold the result
-        Iterate 1 letter at a time over the string
-        if (given letter word is equal to '$' and next letter is '{')
-        search for variables declared before with the name between the braces
-        if a search was successful
-            add an appropriate modifier to str
-        else
-            add string including the braces as it is to str
-        else
-        add a string as it is to str
-    Return str
-
-The code in the above example converts into a format string
-for eg in C
-("Printing value of a and b : %d %d",a,b)
-while in python it would look like:
-f'Printing value of a and b : {a} {b}'
-
-This formatted string along with their variable names are passed onto their respective print statements hence facilitating multi-variable output
-
-## Step 3: Implementing arithmetic operations
-
-An esolang is incomplete if it cannot perform all the basic mathematical operations. Since we are following the syntax of HTML, we needed a specific way to tell the transpiler that the following line to be parsed is a mathematical operation. So the operator that we have used is '%'.
-
-```js
-    An example of a mathematical statement in Creact :
-
-    <% x = (x+(2*y)/z) %>
+    [   {   “print()“   }  ,  { “Material to be inserted i.e connected parts of a multiline <log> ” }  ,  {   “;”    }];
 
 ```
 
-Achieving this transpilation is significantly simpler than you might be thinking. Note that we are just making a transpiler and not an actual compiler. So we just need to parse the statement and translate it to C/C++ and the GCC call does the rest of the work for us.
+So it can be parsed as ==========> [ { “ print(“material---------”); “ } ]
 
-So we parse the line after checking the presence of '%' and then transpile the mathematical statement with the help of a temporary vector to push into the parent vector string that must be transpiled. One point of caution in such parsing is checking that the spaces between different terms don't affect the process of parsing. Using the brute force method to check positions will not help and may lead to the code crashing. So instead use a temporary vector to push the different characters.
+and then re-inserted at the head node whereas removing the already present nodes.
 
-In conclusion, we perform all the mathematical operations in Creact inside blocks that are labeled with '%' for easier understanding of the transpiler and maintaining the syntax of the language.
+This way we can create a simple printing program in our language.
+
+### Automating compilation using makefile and bash scripting
+
+#### Makefile
+
+        Make is a Unix utility that is designed to start the execution of a makefile. A makefile is a special file, containing shell commands, that you create and name makefile (or Makefile depending upon the system). While in the directory containing this makefile, you will typically make and the commands in the makefile will be executed
+
+        Make keeps track of the last time files (normally object files) were updated and only updates those files which are required (ones containing changes) to keep the source file up-to-date.
+
+        With this, you don't have to compile the code repeatedly, a simple make command in the terminal will compile the changed code
+
+#### Bash scripting
+
+    A bash script file is a file containing several bash commands, all of which gets executed once the bash script file is run on the system
+    In this project contents of the bash script file include
+        1. Changing working directory to Main
+        2. make command
+        3. Running transpiler binary with the file name
+        4. Compiling transpiled program using g++
+        5. Executing transpiled binary
+        6. Removing transpiled c file and binary
+    Bash script files can be run using the command ./script.sh
+
+Note: you might need to allow execution of the bash script in your system by using:` chmod +x script.sh` or ` chmod 777 script.sh`
+
+#### Executing the program
+
+    You need to place a .txt file in the Main folder with contents of CReact code to be executed
+    then change directory to root of the project (if you are not already there) then execute the commands
+
+```
+chmod +x script.sh
+./script.sh input.txt # assuming name of the file is input.txt
+```
