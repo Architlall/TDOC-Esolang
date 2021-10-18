@@ -4,9 +4,9 @@ The given eso-lang follows an HTML syntax construct so for example we have used 
 
 ```html
 <htpl>
-  <main>
-    <log>Hello World </log>
-  </main>
+    <main>
+        <log>Hello World </log>
+    </main>
 </htpl>
 ```
 
