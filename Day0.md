@@ -16,6 +16,10 @@ So we would be building a new esoteric (basically means crazy) language that get
 
 So here we shall go step by step and understand how to transpile our code in any format to a proper C code for easier reference. We have used a simple language like HTML to work with.
 
+## Installation and setup of VS Code and MinGW on Windows -
+ for minGW setup -                         https://www.msys2.org/
+ for running you first code in vs code -   https://code.visualstudio.com/docs/cpp/config-mingw
+
 ## Introduction Resources :
 
     - Overview Of C++ Language (Docs)  : https://www.cplusplus.com/reference/
@@ -63,11 +67,11 @@ For more details check out this link: https://www.cplusplus.com/reference/vector
 
 For more details check out this link: https://www.cplusplus.com/reference/unordered_map/unordered_map/
 
-### An inbuilt Database :
+### A Symbol Table :
 
-Though it sounds very tricky rather it isn't, so what does a database does, in layman terms it helps us search for a particular data or a particular value based on our query, so here our query can be based on keywords which would be the basic constructs of the language which shouldn’t be modified and should inject predetermined code whenever needed in the program this can significantly reduce the time complexity of the code making it more efficient.
+Though it sounds very tricky rather it isn't, so what does a symbol table does, in layman terms it helps us search for a particular data or a particular value based on our query, so here our query can be based on keywords which would be the basic constructs of the language which shouldn’t be modified and should inject predetermined code whenever needed in the program this can significantly reduce the time complexity of the code making it more efficient.
 
-A basic implementation of a database will be storing a collection of tuples having a key-value pair to be used to insert code snippets on the go.
+A basic implementation of such a table will be storing a collection of tuples having a key-value pair to be used to insert code snippets on the go.
 
 For example: let's say I stored a string named HTML having a value of say “#include” or say “import” in java so at first instance it can pop this value to be stored on a container.
 
