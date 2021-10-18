@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <math.h>
 #include <string>
+#include <time.h>
 std::unordered_map<std::string, std::pair<std::string, std::string>> varStore;
 std::vector<std::string> codeSnippets;
 std::vector<std::string> conditionalRender;

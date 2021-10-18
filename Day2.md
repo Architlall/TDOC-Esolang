@@ -103,3 +103,10 @@ Note: you might need to allow execution of the bash script in your system by usi
 chmod +x script.sh
 ./script.sh input.txt # assuming name of the file is input.txt
 ```
+
+## Windows Compilation 
+
+In windows , as there is no bash terminal, we have to install gitbash, which is a must for it.
+Then in the bash file script.sh while programming the terminal to execute the `make` command rather we have to do a sys call to bin folder of MinGW, which contains a specific file to execute Make files, i.e `mingw32-make.exe` this file executes MakeFile, that creates a binary for the transpiler which can then call the gcc compiler on parsed C file.
+
+But remember to do this set the bin folder of your MinGW in environment variables section as a global variable, else the terminal will fail to recognise the make.exe file and the program won't compile.
